@@ -33,23 +33,44 @@ export default function TabTwoScreen() {
       </ThemedView>
 
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="subtitle">General</ThemedText>
+        <ThemedText type="subtitle">General Alerts</ThemedText>
       </ThemedView>   
-      <ThemedContainer type='bgLevelSetting'>
+      <View style={styles.settingsBox}>
         <View>
-          <ThemedText>Low Blood Sugar</ThemedText>
+          <ThemedText style={styles.text}>Low Blood Sugar</ThemedText>
         </View>
         <View>
-          <TextInput>Number</TextInput>
+          <TextInput style={styles.input}>70</TextInput>
         </View>
-      </ThemedContainer>   
-      <ThemedText type='bgLevelSetting'>High Blood Sugar</ThemedText>
+      </View>   
+      <View style={styles.settingsBox}>
+        <View>
+          <ThemedText style={styles.text}>High Blood Sugar</ThemedText>
+        </View>
+        <View>
+          <TextInput style={styles.input}>180</TextInput>
+        </View>
+      </View>   
 
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="subtitle">Night</ThemedText>
+        <ThemedText type="subtitle">Night Alerts</ThemedText>
       </ThemedView>
-      <ThemedText type='bgLevelSetting'>Low Blood Sugar</ThemedText>
-      <ThemedText type='bgLevelSetting'>High Blood Sugar</ThemedText>
+      <View style={styles.settingsBox}>
+        <View>
+          <ThemedText style={styles.text}>Low Blood Sugar</ThemedText>
+        </View>
+        <View>
+          <TextInput style={styles.input}>70</TextInput>
+        </View>
+      </View>   
+      <View style={styles.settingsBox}>
+        <View>
+          <ThemedText style={styles.text}>High Blood Sugar</ThemedText>
+        </View>
+        <View>
+          <TextInput style={styles.input}>200</TextInput>
+        </View>
+      </View>   
 
     </ParallaxScrollView>
   );
@@ -66,4 +87,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
   },
+  settingsBox: {
+    fontSize: 16,
+    lineHeight: 24,
+    borderWidth: 1.2,
+    borderColor: '#A9A9A9',
+    borderRadius: 2,
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  }, 
+  input: {
+    paddingVertical: 10,
+  }, 
+  text: {
+    paddingTop: 8,
+  }
 });
