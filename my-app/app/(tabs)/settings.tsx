@@ -4,7 +4,6 @@ import { View, Platform, StyleSheet, Pressable, TextInput } from 'react-native';
 import { Collapsible } from '@/components/ui/collapsible';
 import { ExternalLink } from '@/components/external-link';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedContainer } from '@/components/themed-container';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -21,12 +20,14 @@ export default function TabTwoScreen() {
           name="gear"
           style={styles.headerImage}
         />
-      }>
+      }
+      headerHeight={0}>
       <ThemedView style={styles.titleContainer}>
         <ThemedText
           type="title"
           style={{
             fontFamily: Fonts.rounded,
+            paddingVertical: 16,
           }}>
           Settings
         </ThemedText>
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     borderWidth: 1.2,
     borderColor: '#A9A9A9',
-    borderRadius: 2,
+    borderRadius: 4,
     padding: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',

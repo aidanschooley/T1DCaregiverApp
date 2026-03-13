@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { Collapsible } from '@/components/ui/collapsible';
 import { ExternalLink } from '@/components/external-link';
@@ -12,88 +12,52 @@ import { Fonts } from '@/constants/theme';
 export default function TabTwoScreen() {
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={400}
-          color="#808080"
-          name="paperplane.fill"
-          style={styles.headerImage}
-        />
-      }>
+      headerBackgroundColor={{ light: '#90EE90', dark: '#77DD77' }}
+      headerHeight={0}>
       <ThemedView style={styles.titleContainer}>
         <ThemedText
           type="title"
           style={{
             fontFamily: Fonts.rounded,
+            paddingVertical: 16,
           }}>
           Alerts
         </ThemedText>
       </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
+      <ThemedText type="subtitle" style={{ paddingHorizontal: 16 }}>Friday Mar 13</ThemedText>
+      <View>
+        <ThemedView style={styles.generalAlertContainer}>
+          <ThemedText type="subtitle">Low Blood Sugar: 68</ThemedText>
+          <ThemedText>Eat carbs</ThemedText>
+        </ThemedView>
+      </View>
+      <View>
+        <ThemedView style={styles.generalAlertContainer}>
+          <ThemedText type="subtitle">High Blood Sugar: 250</ThemedText>
+          <ThemedText>Take insulin</ThemedText>
+        </ThemedView>
+      </View>
+      <View>
+        <ThemedView style={styles.nightAlertContainer}>
+          <ThemedText type="subtitle">Low Blood Sugar: 68</ThemedText>
+          <ThemedText>Eat carbs</ThemedText>
+        </ThemedView>
+      </View>
+
+      <ThemedText type="subtitle" style={{ paddingHorizontal: 16 }}>Thursday Mar 12</ThemedText>
+      <View>
+        <ThemedView style={styles.generalAlertContainer}>
+          <ThemedText type="subtitle">Low Blood Sugar: 68</ThemedText>
+          <ThemedText>Eat carbs</ThemedText>
+        </ThemedView>
+      </View>
+      <View>
+        <ThemedView style={styles.generalAlertContainer}>
+          <ThemedText type="subtitle">No Signal</ThemedText>
+          <ThemedText>Check Dexcom</ThemedText>
+        </ThemedView>
+      </View>
+
     </ParallaxScrollView>
   );
 }
@@ -107,6 +71,30 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: 'row',
+    gap: 8,
+  },
+  alertContainer: {
+    borderWidth: 1,
+    padding: 16,
+    flexDirection: 'column',
+    gap: 8,
+  }, 
+  generalAlertContainer: {
+    borderColor: '#c4c4c4',
+    backgroundColor: '#f7f7f7',
+    borderWidth: 2,
+    borderRadius: 6,
+    padding: 13,
+    flexDirection: 'column',
+    gap: 8,
+  },
+  nightAlertContainer: {
+    borderColor: '#929292',
+    backgroundColor: '#d7d7d7',
+    borderWidth: 2,
+    borderRadius: 6,
+    padding: 13,
+    flexDirection: 'column',
     gap: 8,
   },
 });
