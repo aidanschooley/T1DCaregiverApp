@@ -7,6 +7,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
 import { Link } from 'expo-router';
+import { Button } from '@react-navigation/elements';
 
 export default function HomeScreen() {
   return (
@@ -52,15 +53,20 @@ export default function HomeScreen() {
           </ThemedText>
         </View>
       </ThemedView>
-      <ThemedView>
-        <ThemedText style={styles.chart}>
+      <ThemedView style={styles.chart}>
+        <ThemedText>
           Chart
         </ThemedText>
       </ThemedView>
-      <ThemedView>
-        <ThemedText style={styles.suggestion}>
+      <ThemedView style={styles.suggestion}>
+        <ThemedText >
           Current Suggestion
         </ThemedText>
+        <ThemedView style={styles.buttons}>
+          {/* Make custom button for styling purposes */}
+          <Button style={styles.button}>Accept</Button>
+          <Button style={styles.button}>Reject</Button>
+        </ThemedView>
       </ThemedView>
       <ThemedView>
         <ThemedText style={styles.text}>
@@ -99,6 +105,17 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 6,
     padding: 5,
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 8,
+  },
+  button: {
+    backgroundColor: '#fff',
+    borderColor: '#c4c4c4',
+    borderWidth: 1,
+    color: '#000',
   },
   text: {
     borderColor: '#808080',
