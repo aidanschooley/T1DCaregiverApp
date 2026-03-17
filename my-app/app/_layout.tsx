@@ -16,7 +16,8 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        <Stack.Screen name="patient" options={{ presentation: 'modal', headerShown: false }} />
+        {/* change stack screen so that it loads different data when different patients are clicked in patient.tsx */}
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

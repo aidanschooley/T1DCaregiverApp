@@ -1,7 +1,6 @@
 import { Image } from 'expo-image';
 import { Platform, StyleSheet, View, Text } from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -15,7 +14,7 @@ export default function HomeScreen() {
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerHeight={0}>
       <ThemedView style={styles.backContainer}>
-        <Link href="/modal">
+        <Link href="/patient">
           <Link.Trigger>
             <ThemedText type="subtitle">{
                     <IconSymbol
