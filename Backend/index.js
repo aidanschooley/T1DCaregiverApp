@@ -1,21 +1,10 @@
+require('dotenv').config()
+const patients = require('./routes/patients.js')
 const express = require('express')
-const cors = require('cors')
-const dotenv = require('dotenv')
-
-dotenv.config()
-
 const app = express()
 
-app.use(cors())
 app.use(express.json())
+app.use('/api/patinets', require('./routes/patients'))
+// app.use('/api/posts', require('./routes/posts'))
 
-//Test Route
-app.get('/api', (req, res) => {
-    res.json({status:"ok"})
-})
-
-const PORT = 3000
-
-app.listen(PORT, ()=> {
-    console.log(`Server Running on http://localhost:${PORT}`)
-})
+app.listen(3000, () => console.log('Server running on port 3000'))
