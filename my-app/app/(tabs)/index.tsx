@@ -22,13 +22,13 @@ export default function HomeScreen() {
       <ThemedView style={styles.backContainer}>
         <Link href="/patient">
           <Link.Trigger>
-            <ThemedText type="subtitle">{
+            <ThemedText type="subtitle">{/*{
                     <IconSymbol
-                      size={50}
+                      size={30}
                       color="#808080"
                       name="chevron.left"
                     />
-                  }
+                  }*/}
                   {patientData.find(patient => patient.patientSelected === true)?.patientName}
             </ThemedText>
           </Link.Trigger>
