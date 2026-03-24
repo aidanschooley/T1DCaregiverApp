@@ -1,19 +1,61 @@
 import { Link } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, FlatList, View, Text, Pressable } from 'react-native';
+import { useNavigation } from 'expo-router';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
+import localData from '@/testData/testPatientData.json';
+
 export default function ModalScreen() {
+
+  const patientData = localData.patients;
+
+  const navigation = useNavigation();
+
+  const handlePress = (clickedPatientID: number) => {
+    // set patient as selected when clicked and unselect previous selected patient
+    const selectedPatient = patientData.find(patient => patient.patientSelected === true);
+    const clikedPatient = patientData.find(patient => +patient.patientId === clickedPatientID);
+    if (selectedPatient && +selectedPatient.patientId !== clickedPatientID) {
+      selectedPatient.patientSelected = false;
+    }
+    if (clikedPatient) {
+      clikedPatient.patientSelected = true;
+    }
+    navigation.goBack();
+    console.log("We did it! Patient ID: ", clickedPatientID);
+  };
+
+  
   return (
     <ThemedView style={styles.container}>
       <ThemedText type="title">Select Patient</ThemedText>
-      <Link href="/" dismissTo style={styles.selectedPatient}>
-        <ThemedText>Joe Smith</ThemedText>
-      </Link>
-      <Link href="/" dismissTo style={styles.patient}>
-        <ThemedText>Mary Smith</ThemedText>
-      </Link>
+      <FlatList 
+        data={patientData}
+        keyExtractor={(item) => item.patientId.toString()}
+        renderItem={({ item }) => (
+          <View>
+            {item.patientSelected? (
+              <Link href="/" dismissTo style={styles.selectedPatient}>
+                <View>
+                  <ThemedText type={'subtitle'}>{item.patientName}</ThemedText>
+                  <ThemedText>{item.patientId}</ThemedText>
+                </View>
+              </Link>
+            ) : (
+              <Pressable 
+              onPress={ () => handlePress(+item.patientId)} 
+              style={styles.patient}>
+                  <View>
+                    <ThemedText type={'subtitle'}>{item.patientName}</ThemedText>
+                    <ThemedText>{item.patientId}</ThemedText>
+                  </View>
+              </Pressable>
+            )}
+          </View>
+        )}
+      />
 
       <Link href="/" dismissTo style={styles.link}>
         <ThemedText type="link">Back</ThemedText>
@@ -42,6 +84,9 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 10,
     marginTop: 20,
+    flex: 1,  
+    justifyContent: 'center', 
+    alignItems: 'center'
   }, 
   patient: {
     padding: 20,

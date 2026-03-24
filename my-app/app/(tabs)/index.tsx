@@ -9,7 +9,12 @@ import { Fonts } from '@/constants/theme';
 import { Link } from 'expo-router';
 import { Button } from '@react-navigation/elements';
 
+import localData from '@/testData/testPatientData.json';
+
 export default function HomeScreen() {
+
+  const patientData = localData.patients;
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -24,6 +29,7 @@ export default function HomeScreen() {
                       name="chevron.left"
                     />
                   }
+                  {patientData.find(patient => patient.patientSelected === true)?.patientName}
             </ThemedText>
           </Link.Trigger>
           <Link.Preview />
@@ -49,7 +55,7 @@ export default function HomeScreen() {
       <ThemedView>
         <View style={styles.bgCircle}>
           <ThemedText style={{ fontSize: 32 }}>
-            100
+            {patientData.find(patient => patient.patientSelected === true)?.patientCurrentBG}
           </ThemedText>
         </View>
       </ThemedView>
