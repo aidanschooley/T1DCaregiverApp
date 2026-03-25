@@ -7,9 +7,6 @@ require("dotenv")
 const router = Router();
 
 router.get('/login', async (req, res) => {
-console.log('client_id:', config.clientId)
-  console.log('redirect_uri:', config.redirectUri)
-  console.log('authorizationEndpoint:', config.authorizationEndpoint)
   const state = oauth.generateRandomState();
   req.session.oauthState = state;
 
@@ -47,7 +44,6 @@ router.get('/callback', async (req, res) => {
       body: body.toString()
     });
     const data = await response.json();
-    console.log(data)
     req.session.token = data; 
     req.session.save()
     res.send('Successfully Got Token');
@@ -57,10 +53,7 @@ router.get('/callback', async (req, res) => {
 });
 
 router.get('/bg', async (req, res) => {
-  console.log('token from session:', req.session.token);
   const [startDate, endDate] = formatDexcomTime();
-  console.log(startDate);
-  console.log(endDate);
   if (!req.session.token) {
     return res.status(401).json({ error: 'Not authenticated — visit /login first' });
   }
@@ -81,8 +74,6 @@ router.get('/bg', async (req, res) => {
 );
 
 const data = await resp.text();
-console.log('Dexcom status:', resp.status);
-console.log('Dexcom body:', data);
 
 if (!resp.ok) {
     return res.status(resp.status).send(data);
