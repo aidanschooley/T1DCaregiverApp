@@ -11,17 +11,6 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
 
-const data = [
-  { label: 'Item 1', value: '1' },
-  { label: 'Item 2', value: '2' },
-  { label: 'Item 3', value: '3' },
-  { label: 'Item 4', value: '4' },
-  { label: 'Item 5', value: '5' },
-  { label: 'Item 6', value: '6' },
-  { label: 'Item 7', value: '7' },
-  { label: 'Item 8', value: '8' },
-];
-
 const hiNumberData = Array.from({ length: (200-125)+1 }, (_, i) => ({
   label: `${i + 125}`,
   value: i + 1,
@@ -33,8 +22,12 @@ const loNumberData = Array.from({ length: (100-70)+1 }, (_, i) => ({
 }));
 
 export default function TabTwoScreen() {
+  // Default values for general alerts
   const [loValue, setLoValue] = useState(1);
   const [hiValue, setHiValue] = useState(1);
+  // Default values for night alerts
+  const [loNightValue, setLoNightValue] = useState(1);
+  const [hiNightValue, setHiNightValue] = useState(1);
 
   return (
     <ParallaxScrollView
@@ -64,48 +57,8 @@ export default function TabTwoScreen() {
       </ThemedView>   
       <View style={styles.settingsBox}>
         <View>
-          <ThemedText style={styles.text}>Low Blood Sugar</ThemedText>
-        </View>
-        <View>
-          <TextInput style={styles.input}>70</TextInput>
-        </View>
-      </View>   
-      <View style={styles.settingsBox}>
-        <View>
-          <ThemedText style={styles.text}>High Blood Sugar</ThemedText>
-        </View>
-        <View>
-          <TextInput style={styles.input}>180</TextInput>
-        </View>
-      </View>   
-
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="subtitle">Night Alerts</ThemedText>
-      </ThemedView>
-      <View style={styles.settingsBox}>
-        <View>
-          <ThemedText style={styles.text}>Low Blood Sugar</ThemedText>
-        </View>
-        <View>
-          <TextInput style={styles.input}>70</TextInput>
-        </View>
-      </View>   
-      <View style={styles.settingsBox}>
-        <View>
-          <ThemedText style={styles.text}>High Blood Sugar</ThemedText>
-        </View>
-        <View>
-          <TextInput style={styles.input}>200</TextInput>
-        </View>
-      </View>   
-
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="subtitle">Test Dropdown </ThemedText>
-      </ThemedView>
-      <View>
-        <View>
           <ThemedText>
-            Low Blood Suagr
+            Low Blood Sugar
           </ThemedText>
         </View>
         <Dropdown
@@ -114,6 +67,7 @@ export default function TabTwoScreen() {
           labelField='label'
           valueField='value'
           value={loValue}
+          autoScroll={false}
           placeholderStyle={{ color: '#808080' }}
           selectedTextStyle={{ color: '#000000' }}
           onChange={item => {
@@ -121,10 +75,54 @@ export default function TabTwoScreen() {
           }}
         />
       </View>
-      <View>
+      <View style={styles.settingsBox}>
         <View>
           <ThemedText>
-            High Blood Suagr
+            High Blood Sugar
+          </ThemedText>
+        </View>
+        <Dropdown
+          style={styles.dropdown}
+          data={hiNumberData.reverse()}
+          labelField='label'
+          valueField='value'
+          value={hiValue}
+          autoScroll={false}
+          placeholderStyle={{ color: '#808080' }}
+          selectedTextStyle={{ color: '#000000' }}
+          onChange={item => {
+            setHiValue(item.value);
+          }}
+        />
+      </View>   
+
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText type="subtitle">Night Alerts</ThemedText>
+      </ThemedView>
+      <View style={styles.settingsBox}>
+        <View>
+          <ThemedText>
+            Low Blood Sugar
+          </ThemedText>
+        </View>
+        <Dropdown
+          style={styles.dropdown}
+          data={loNumberData}
+          labelField='label'
+          valueField='value'
+          value={loNightValue}
+          autoScroll={false}
+          placeholderStyle={{ color: '#808080' }}
+          selectedTextStyle={{ color: '#000000' }}
+          onChange={item => {
+            setLoNightValue(item.value);
+          }}
+        />
+      </View>
+      <View style={styles.settingsBox}>
+        <View>
+          <ThemedText>
+            High Blood Sugar
           </ThemedText>
         </View>
         <Dropdown
@@ -132,11 +130,14 @@ export default function TabTwoScreen() {
           data={hiNumberData}
           labelField='label'
           valueField='value'
-          value={hiValue}
+          value={hiNightValue}
+          autoScroll={false}
+          dropdownPosition='top'
+          inverted={false}
           placeholderStyle={{ color: '#808080' }}
           selectedTextStyle={{ color: '#000000' }}
           onChange={item => {
-            setHiValue(item.value);
+            setHiNightValue(item.value);
           }}
         />
       </View>
@@ -155,18 +156,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
   },
-  dropdownBox: {
-
-  },
   settingsBox: {
     fontSize: 16,
-    lineHeight: 24,
     borderWidth: 1.2,
     borderColor: '#A9A9A9',
     borderRadius: 4,
     padding: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   }, 
   input: {
     paddingVertical: 10,
