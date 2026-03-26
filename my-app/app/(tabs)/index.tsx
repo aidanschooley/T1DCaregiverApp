@@ -8,13 +8,14 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
 import { Link } from 'expo-router';
 import { Button } from '@react-navigation/elements';
+import fetchBg from '../../functions/fetchBg.js'
 
 import localData from '@/testData/testPatientData.json';
 
 export default function HomeScreen() {
 
   const patientData = localData.patients;
-
+  const bgData = fetchBg();
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
