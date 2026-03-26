@@ -14,7 +14,7 @@ const app = express()
 // }))
 
 app.use(express.json())
-app.use('/api/patient', patient )
+app.use('/api/patients', patient )
 app.use('/api/glucose', glucose)
 app.use('/dexcom/auth', authentication)
 app.use('/dexcom/api', glucoseApi)
