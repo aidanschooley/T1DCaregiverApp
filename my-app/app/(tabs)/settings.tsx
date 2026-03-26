@@ -24,7 +24,7 @@ const data = [
 
 const hiNumberData = Array.from({ length: (200-125)+1 }, (_, i) => ({
   label: `${i + 125}`,
-  value: i + 125,
+  value: i + 1,
 }));
 
 const loNumberData = Array.from({ length: (100-70)+1 }, (_, i) => ({
@@ -33,7 +33,8 @@ const loNumberData = Array.from({ length: (100-70)+1 }, (_, i) => ({
 }));
 
 export default function TabTwoScreen() {
-  const [value, setValue] = useState(1);
+  const [loValue, setLoValue] = useState(1);
+  const [hiValue, setHiValue] = useState(1);
 
   return (
     <ParallaxScrollView
@@ -112,11 +113,11 @@ export default function TabTwoScreen() {
           data={loNumberData}
           labelField='label'
           valueField='value'
-          value={value}
+          value={loValue}
           placeholderStyle={{ color: '#808080' }}
           selectedTextStyle={{ color: '#000000' }}
           onChange={item => {
-            setValue(item.value);
+            setLoValue(item.value);
           }}
         />
       </View>
@@ -131,10 +132,11 @@ export default function TabTwoScreen() {
           data={hiNumberData}
           labelField='label'
           valueField='value'
+          value={hiValue}
           placeholderStyle={{ color: '#808080' }}
           selectedTextStyle={{ color: '#000000' }}
           onChange={item => {
-            setValue(item.value);
+            setHiValue(item.value);
           }}
         />
       </View>
