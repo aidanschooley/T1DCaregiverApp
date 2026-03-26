@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { useState } from 'react';
 import { Platform, StyleSheet, View, Text } from 'react-native';
 
 import ParallaxScrollView from '@/components/parallax-scroll-view';
@@ -16,6 +17,7 @@ export default function HomeScreen() {
 
   const patientData = localData.patients;
   const bgData = fetchBg();
+  
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -56,7 +58,8 @@ export default function HomeScreen() {
       <ThemedView>
         <View style={styles.bgCircle}>
           <ThemedText style={{ fontSize: 32 }}>
-            {patientData.find(patient => patient.patientSelected === true)?.patientCurrentBG}
+            {/* {patientData.find(patient => patient.patientSelected === true)?.patientCurrentBG} */}
+            {bgData}
           </ThemedText>
         </View>
       </ThemedView>

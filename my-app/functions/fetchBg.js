@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 const fetchBg = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
