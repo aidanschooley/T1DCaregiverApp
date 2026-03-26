@@ -3,7 +3,7 @@ const fetchBg = () => {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
 
-  const getApiData = async () => {
+  const fetchBg = async () => {
     try {
       const response = await fetch('http://localhost:3000/dexcom/api/bg');
       // Fetch does not reject the Promise on HTTP error statuses (like 404), 
