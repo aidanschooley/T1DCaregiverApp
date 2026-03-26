@@ -24,10 +24,10 @@ const loNumberData = Array.from({ length: (100-70)+1 }, (_, i) => ({
 export default function TabTwoScreen() {
   // Default values for general alerts
   const [loValue, setLoValue] = useState(1);
-  const [hiValue, setHiValue] = useState(1);
+  const [hiValue, setHiValue] = useState(26);
   // Default values for night alerts
   const [loNightValue, setLoNightValue] = useState(1);
-  const [hiNightValue, setHiNightValue] = useState(1);
+  const [hiNightValue, setHiNightValue] = useState(76);
 
   return (
     <ParallaxScrollView
