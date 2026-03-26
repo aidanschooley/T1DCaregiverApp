@@ -1,3 +1,5 @@
+
+async function fetchBg(){
 const response = await fetch('http://localhost:3000/dexcom/api/bg', {
   method: 'GET',
   headers: { 
@@ -12,3 +14,6 @@ if (!response.ok) {
 
 const data = await response.json();
 console.log('Blood Glucose Data:', data);
+};
+
+export default fetchBg
