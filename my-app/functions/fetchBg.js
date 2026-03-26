@@ -1,28 +1,14 @@
-import { useState } from 'react';
+const response = await fetch('http://localhost:3000/dexcom/api/bg', {
+  method: 'GET',
+  headers: { 
+    'Content-Type': 'application/x-www-form-urlencoded' 
+  },
+});
 
-const fetchBg = () => {
-  const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
+if (!response.ok) {
+  const err = await response.text();
+  throw new Error(`Fetch failed: ${err}`);
+}
 
-  const fetchBg = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/dexcom/api/bg');
-      // Fetch does not reject the Promise on HTTP error statuses (like 404), 
-      // so you must check the response.ok property manually.
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const json = await response.json();
-      setData(json);
-      console.log(data)
-    } catch (error) {
-      console.error(error);
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-};
-};
-
-export default fetchBg;
+const data = await response.json();
+console.log('Blood Glucose Data:', data);
