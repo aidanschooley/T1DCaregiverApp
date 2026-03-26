@@ -1,15 +1,11 @@
 const express = require('express')
 const patient = require('./routes/patients')
 const glucose = require('./routes/glucose')
-const authentication = require('./routes/authentication')
+const authentication = require('./routes/dexcomApi/authentication')
+const glucoseApi = require('./routes/dexcomApi/glucoseApi')
+const dataRange = require('./routes/dexcomApi/datarange')
 const session = require('express-session')
 const app = express()
-
-
-console.log('patient:', typeof patient)
-console.log('glucose:', typeof glucose)
-console.log('authentication:', typeof authentication)
-console.log('session:', typeof session)
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'dev_secret',
@@ -18,9 +14,12 @@ app.use(session({
 }))
 
 app.use(express.json())
-app.use('/api/patients', patient )
+app.use('/api/patient', patient )
 app.use('/api/glucose', glucose)
-app.use('/auth', authentication)
+app.use('/dexcom/auth', authentication)
+app.use('/dexcom/api', glucoseApi)
+app.use('/dexcom/api', dataRange)
+
 
 app.get('/', (req, res) => {
     res.json("Api running")
