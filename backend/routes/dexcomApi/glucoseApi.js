@@ -1,7 +1,7 @@
 const { Router } = require('express');
-const { formatDexcomTime } = require("../../function/dexcom_time.js")
-const getValidAccessToken = require("../../function/getValidAccessToken.js")
-const pool = require('../../db');
+const { formatDexcomTime } = require("../../config/dexcom_time.js")
+const getValidAccessToken = require("../../config/getValidAccessToken.js")
+const pool = require('../../config/db.js');
 
 const router = Router();
 

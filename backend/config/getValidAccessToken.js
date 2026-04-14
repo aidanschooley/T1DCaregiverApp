@@ -1,5 +1,5 @@
-const pool = require('../db');
-const config = require('../client/dexcomClient.js');
+const pool = require('./db.js');
+const config = require('./dexcomClient.js');
 
 async function getValidAccessToken() {
   const { rows } = await pool.query(

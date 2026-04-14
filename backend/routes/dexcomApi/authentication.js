@@ -1,8 +1,8 @@
 const { Router } = require('express');
 const oauth = require('oauth4webapi');
-const config = require('../../client/dexcomClient.js');
-const pool = require('../../db')
-const { formatDexcomTime } = require("../../function/dexcom_time.js")
+const config = require('../../config/dexcomClient.js');
+const pool = require('../../config/db.js')
+const { formatDexcomTime } = require("../../config/dexcom_time.js")
 require("dotenv")
 // "/dexcom/auth"
 const router = Router();

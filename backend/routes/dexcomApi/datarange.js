@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const getValidAccessToken = require('../../function/getValidAccessToken');
+const getValidAccessToken = require('../../config/getValidAccessToken');
 const router = Router();
 router.get('/dataRange', async (req, res) => {
 
