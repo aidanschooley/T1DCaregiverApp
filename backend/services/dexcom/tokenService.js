@@ -45,4 +45,4 @@ async function tokenService() {
   return data.access_token;
 }
 
-export default getValidAccessToken;
+export default tokenService;

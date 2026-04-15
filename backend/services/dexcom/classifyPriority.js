@@ -1,3 +1,5 @@
+
+
 async function classifyPriority(bgValue) {
     if (bgValue < 54) {
         return 'P0';
@@ -12,4 +14,4 @@ async function classifyPriority(bgValue) {
     }
 }
 
-export default classifyPriority;
+export { classifyPriority };
