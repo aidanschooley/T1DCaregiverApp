@@ -28,8 +28,6 @@ async function getCurrentBG() {
 
     const parsedData = JSON.parse(data);
     const records = parsedData.records[0];
-    console.log(records);
-
 
 //     await pool.query(
 //     `INSERT INTO cgm_reading (patient_id, bg_value, trend_arrow, created_at)
@@ -41,7 +39,7 @@ async function getCurrentBG() {
 //       records.systemTime     
 //     ]
 //   );
-    // return JSON.parse(data);
+    return records;
 
     } catch(err){
         console.error('BG fetch error:', err.message);
