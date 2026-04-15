@@ -1,9 +1,9 @@
-const { Router } = require('express');
-const oauth = require('oauth4webapi');
-const config = require('../../config/dexcomClient.js');
-const pool = require('../../config/db.js')
-const { formatDexcomTime } = require("../../config/dexcom_time.js")
-require("dotenv")
+import { Router } from 'express';
+import oauth from 'oauth4webapi';
+import config from '../../config/dexcomClient.js';
+import pool from '../../config/db.js'
+import { formatDexcomTime } from "../../config/dexcom_time.js"
+import "dotenv/config.js"
 // "/dexcom/auth"
 const router = Router();
 
@@ -69,5 +69,4 @@ router.get('/callback'   , async (req, res) => {
   }
 });
 
-
-module.exports = router
+export default router

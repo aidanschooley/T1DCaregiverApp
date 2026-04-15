@@ -1,8 +1,8 @@
-require('dotenv').config();
+import 'dotenv/config.js';
 
 const BASE_URL = 'https://sandbox-api.dexcom.com';
 
-module.exports = {
+export default {
   BASE_URL,
   authorizationEndpoint: `${BASE_URL}/v3/oauth2/login`,
   tokenEndpoint: `${BASE_URL}/v3/oauth2/token`,

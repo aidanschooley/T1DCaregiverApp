@@ -15,4 +15,4 @@ function formatDexcomTime(date = new Date()) {
   return [format(fiveMinAgo), format(date)];
 }
 
-module.exports = { formatDexcomTime };
+export { formatDexcomTime };

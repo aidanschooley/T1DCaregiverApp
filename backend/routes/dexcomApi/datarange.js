@@ -1,5 +1,5 @@
-const { Router } = require('express');
-const getValidAccessToken = require('../../config/getValidAccessToken');
+import { Router } from 'express';
+import getValidAccessToken from '../../config/getValidAccessToken.js';
 const router = Router();
 router.get('/dataRange', async (req, res) => {
 
@@ -19,4 +19,4 @@ const data = await resp.text();
 res.send(JSON.parse(data))
 });
 
-module.exports = router
+export default router

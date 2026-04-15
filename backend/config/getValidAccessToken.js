@@ -1,5 +1,5 @@
-const pool = require('./db.js');
-const config = require('./dexcomClient.js');
+import pool from './db.js';
+import config from './dexcomClient.js';
 
 async function getValidAccessToken() {
   const { rows } = await pool.query(
@@ -45,4 +45,4 @@ async function getValidAccessToken() {
   return data.access_token;
 }
 
-module.exports = getValidAccessToken;
+export default getValidAccessToken;

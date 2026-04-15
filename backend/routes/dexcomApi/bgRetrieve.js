@@ -1,6 +1,6 @@
-const cron = require('node-cron');
-const fs = require('fs');
-const {getCurrentBG} = require('./fetchLatestBg.js');
+import cron from 'node-cron';
+import fs from 'fs';
+import { getCurrentBG } from './fetchLatestBg.js';
 
 console.log('Starting background retrieval task...');
 //Cron Minute Hour DayOfMonth Month DayOfWeek

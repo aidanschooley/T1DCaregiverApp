@@ -1,7 +1,7 @@
-const { Router } = require('express');
-const { formatDexcomTime } = require("../../config/dexcom_time.js")
-const getValidAccessToken = require("../../config/getValidAccessToken.js")
-const pool = require('../../config/db.js');
+import { Router } from 'express';
+import { formatDexcomTime } from "../../config/dexcom_time.js"
+import getValidAccessToken from "../../config/getValidAccessToken.js"
+import pool from '../../config/db.js';
 async function getCurrentBG() {
     try{
     const AuthToken = await getValidAccessToken()
@@ -49,4 +49,4 @@ async function getCurrentBG() {
     }
 }
 
-module.exports = { getCurrentBG };
+export { getCurrentBG };

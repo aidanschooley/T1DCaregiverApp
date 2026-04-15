@@ -1,7 +1,7 @@
-const { Router } = require('express');
-const { formatDexcomTime } = require("../../config/dexcom_time.js")
-const getValidAccessToken = require("../../config/getValidAccessToken.js")
-const pool = require('../../config/db.js');
+import { Router } from 'express';
+import { formatDexcomTime } from "../../config/dexcom_time.js"
+import getValidAccessToken from "../../config/getValidAccessToken.js"
+import pool from '../../config/db.js';
 
 const router = Router();
 
@@ -50,5 +50,4 @@ router.get('/bg', async (req, res) => {
     }
 });
 
-
-module.exports = router
+export default router
