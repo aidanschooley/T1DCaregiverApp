@@ -1,7 +1,7 @@
 import pool from './db.js';
 import config from './dexcomClient.js';
 
-async function getValidAccessToken() {
+async function tokenService() {
   const { rows } = await pool.query(
     'SELECT access_token, refresh_token, token_expires_at FROM patient WHERE id = 1'
   );

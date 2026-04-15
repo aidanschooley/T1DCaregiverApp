@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { formatDexcomTime } from "../../config/dexcom_time.js"
-import getValidAccessToken from "../../config/getValidAccessToken.js"
+import { formatDexcomTime } from "../../services/dexcom/dexcom_time.js"
+import tokenService from '../../services/dexcom/tokenService.js'
 import pool from '../../config/db.js';
 async function getCurrentBG() {
     try{
-    const AuthToken = await getValidAccessToken()
+    const AuthToken = await tokenService()
     const [startDate, endDate] = await formatDexcomTime();
     const query = new URLSearchParams({ startDate, endDate }).toString();
  

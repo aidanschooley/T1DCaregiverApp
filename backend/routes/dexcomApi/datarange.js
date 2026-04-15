@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import getValidAccessToken from '../../config/getValidAccessToken.js';
+import tokenService from '../../services/dexcom/tokenService.js'
 const router = Router();
 router.get('/dataRange', async (req, res) => {
 
 const query = new URLSearchParams({lastSyncTime: 'string'}).toString();
-const accessToken = getValidAccessToken();
+const accessToken = tokenService();
 const resp = await fetch(
   `https://developer.dexcom.com/docs/_mock/swaggerv3/v3/users/self/dataRange?${query}`,
   {
