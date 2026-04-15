@@ -1,4 +1,4 @@
-import pool from './db.js';
+import pool from '../config/db.js';
 import config from '../config/dexcomClient.js';
 
 async function tokenService() {
