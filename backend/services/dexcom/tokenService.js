@@ -1,5 +1,5 @@
 import pool from './db.js';
-import config from './dexcomClient.js';
+import config from '../config/dexcomClient.js';
 
 async function tokenService() {
   const { rows } = await pool.query(
