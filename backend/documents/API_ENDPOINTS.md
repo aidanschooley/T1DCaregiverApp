@@ -34,7 +34,6 @@ Retrieve all patients from the database.
   }
 ]
 ```
-```
 
 ---
 
