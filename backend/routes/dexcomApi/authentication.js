@@ -25,7 +25,7 @@ router.get('/login', async (req, res) => {
 
 
 // /dexcom/auth/callback
-router.get('/callback', async (req, res) => {
+router.get('/callback'   , async (req, res) => {
   const { code, state, error } = req.query;
 
   if (error) return res.status(400).send(`Authorization failed: ${error}`);
