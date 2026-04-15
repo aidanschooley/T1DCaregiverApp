@@ -2,7 +2,7 @@ import { Router } from 'express';
 import * as oauth from 'oauth4webapi';
 import config from '../../config/dexcomClient.js';
 import pool from '../../config/db.js'
-import { formatDexcomTime } from "../../config/dexcom_time.js"
+import { formatDexcomTime } from "../../services/dexcom/dexcom_time.js"
 import "dotenv/config.js"
 // "/dexcom/auth"
 const router = Router();
