@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { formatDexcomTime } from "../../services/dexcom/dexcom_time.js"
 import tokenService from '../../services/dexcom/tokenService.js'
-import pool from '../../config/db.js';
+import pool from '../../config/database.js';
 async function getCurrentBG() {
     try{
     const AuthToken = await tokenService()

@@ -1,5 +1,5 @@
 import express from 'express'
-import pool from '../config/db.js'
+import pool from '../config/database.js'
 const router = express.Router()
 
 router.get('/', async (req, res) => {

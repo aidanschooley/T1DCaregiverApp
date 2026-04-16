@@ -1,5 +1,3 @@
-
-
 async function classifyPriority(bgValue) {
     if (bgValue < 54) {
         return 'P0';
