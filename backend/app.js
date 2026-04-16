@@ -1,10 +1,10 @@
-const express = require('express')
-const patient = require('./routes/patients')
-const glucose = require('./routes/glucose')
-const authentication = require('./routes/dexcomApi/authentication')
-const glucoseApi = require('./routes/dexcomApi/glucoseApi')
-const dataRange = require('./routes/dexcomApi/datarange')
-// const session = require('express-session')
+import express from 'express'
+import patient from './routes/patients.js'
+import glucose from './routes/glucose.js'
+import authentication from './routes/dexcomApi/authentication.js'
+import glucoseApi from './routes/dexcomApi/glucoseApi.js'
+import dataRange from './routes/dexcomApi/datarange.js'
+// import session from 'express-session'
 const app = express()
 
 // app.use(session({
@@ -26,4 +26,4 @@ app.get('/', (req, res) => {
 })
 
 
-module.exports = app
+export default app

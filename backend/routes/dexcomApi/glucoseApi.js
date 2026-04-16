@@ -1,13 +1,13 @@
-const { Router } = require('express');
-const { formatDexcomTime } = require("../../function/dexcom_time.js")
-const getValidAccessToken = require("../../function/getValidAccessToken.js")
-const pool = require('../../db');
+import { Router } from 'express';
+import { formatDexcomTime } from "../../services/dexcom/dexcom_time.js"
+import tokenService from '../../services/dexcom/tokenService.js'
+import pool from '../../config/database.js';
 
 const router = Router();
 
 router.get('/bg', async (req, res) => {
     try{
-    const AuthToken = await getValidAccessToken()
+    const AuthToken = await tokenService()
     const [startDate, endDate] = await formatDexcomTime();
     const query = new URLSearchParams({ startDate, endDate }).toString();
  
@@ -50,5 +50,4 @@ router.get('/bg', async (req, res) => {
     }
 });
 
-
-module.exports = router
+export default router
