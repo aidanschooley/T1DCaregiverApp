@@ -20,13 +20,14 @@ export default function HomeScreen() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    api.get('/api/bg')
+    api.get('dexcom/api/bg/')
       .then(response => {
-        setData(response.data);
+        setData(response.data["records"][0].value);
+        console.log('Glucose Data:', response.data["records"][0].value);
       })
       .catch(error => {
         console.log('Error:', error);
-      });
+      }); 
   }, []);
 
   
@@ -119,8 +120,7 @@ export default function HomeScreen() {
       <ThemedView>
         <View style={styles.bgCircle}>
           <ThemedText style={{ fontSize: 32 }}>
-            {/* {patientData.find(patient => patient.patientSelected === true)?.patientCurrentBG} */}
-            {/*bgData*/} 100
+            {data}
           </ThemedText>
         </View>
       </ThemedView>
@@ -131,7 +131,7 @@ export default function HomeScreen() {
       </ThemedView>
       <ThemedView style={styles.suggestion}>
         <ThemedText >
-        {data.records.value}
+        Suggestion here
         </ThemedText>
         <ThemedView style={styles.buttons}>
           {/* Make custom button for styling purposes */}
