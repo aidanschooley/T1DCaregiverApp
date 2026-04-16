@@ -54,63 +54,7 @@ Retrieve a specific patient by ID.
   }
 ]
 
----
-
-## Glucose API
-
-### GET /api/glucose/:patientId
-Retrieve CGM (Continuous Glucose Monitoring) readings for a specific patient, ordered by most recent first.
-
-**Parameters:**
-- `patientId` (string, required): Patient ID
-
-**Response (200 OK):**
-```json
-[
-  {
-    "id": 1,
-    "patient_id": 1,
-    "bg_value": 120,
-    "trend_arrow": "FLAT",
-    "alert_name": "normal",
-    "alert_state": "active",
-    "created_at": "2024-04-15T10:30:00Z"
-  }
-]
 ```
-
-
----
-
-### POST /api/glucose
-Create a new glucose reading in the database.
-
-**Request Body:**
-```json
-{
-  "patient_id": 1,
-  "bg_value": 120,
-  "trend_arrow": "FLAT",
-  "alert_name": "normal",
-  "alert_state": "active"
-}
-```
-
-**Response (201 Created):**
-```json
-{
-  "id": 1,
-  "patient_id": 1,
-  "bg_value": 120,
-  "trend_arrow": "FLAT",
-  "alert_name": "normal",
-  "alert_state": "active",
-  "created_at": "2024-04-15T10:30:00Z"
-}
-```
-
----
-
 ## Dexcom Authentication API
 
 ### GET /dexcom/auth/login
@@ -171,6 +115,9 @@ Fetch the latest blood glucose data from Dexcom and store it in the database.
   ]
 }
 ``
+
+
+
 
 
 

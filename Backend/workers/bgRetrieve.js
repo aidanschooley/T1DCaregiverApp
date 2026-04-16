@@ -1,7 +1,7 @@
 import cron from 'node-cron';
 import fs from 'fs';
-import { getCurrentBG } from '../../routes/dexcomApi/fetchLatestBg.js'
-import {classifyPriority} from '../../constants/classifyPriority.js';
+import { getCurrentBG } from '../services/dexcom/fetchLatestBg.js'
+import {classifyPriority} from '../constants/classifyPriority.js';
 
 console.log('Starting background retrieval task...');
 //Cron Minute Hour DayOfMonth Month DayOfWeek
