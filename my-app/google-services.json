@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "628956319264",
+    "project_id": "t1d-caregiver-app",
+    "storage_bucket": "t1d-caregiver-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628956319264:android:dc714ab1933f66137cf645",
+        "android_client_info": {
+          "package_name": "T1D.caregiver.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkNif4CYbZtzK2dhjFkYmnjt5sLP6PfJE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
