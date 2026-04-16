@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { formatDexcomTime } from "../../services/dexcom/dexcom_time.js"
-import tokenService from '../../services/dexcom/tokenService.js'
+import { formatDexcomTime } from "./dexcom_time.js"
+import tokenService from './tokenService.js'
 import pool from '../../config/database.js';
 async function getCurrentBG() {
     try{
