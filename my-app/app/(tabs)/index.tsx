@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Platform, StyleSheet, View, Text } from 'react-native';
+import * as Notifications from 'expo-notifications';
 
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
@@ -11,9 +12,69 @@ import { Link } from 'expo-router';
 import { Button } from '@react-navigation/elements';
 import fetchBg from '../../functions/fetchBg.js'
 
+import api from '../../functions/api.js';
 import localData from '@/testData/testPatientData.json';
 
 export default function HomeScreen() {
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    api.get('/api/bg')
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(error => {
+        console.log('Error:', error);
+      });
+  }, []);
+
+  
+  useEffect(() => {
+    const configureNotificationsAsync = async () => {
+      const { granted } = await Notifications.requestPermissionsAsync();
+      if (!granted) {
+        return console.warn("⚠️ Notification Permissions not granted!");
+      }
+
+      Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldPlaySound: true, // Play sound when notification is received
+          shouldSetBadge: true, // Little red dot on app icon
+          shouldShowBanner: true, // Appearing on screen
+          shouldShowList: true, // Show in notification center (appears to show in center even when false?)
+        }),
+      });
+    };
+    configureNotificationsAsync();
+  }, []);
+
+  async function setInteractiveCategories() {
+    await Notifications.setNotificationCategoryAsync('test-category', [
+      {
+        identifier: 'YES_ACTION',
+        buttonTitle: 'Confirm',
+      },
+      {
+        identifier: 'NO_ACTION',
+        buttonTitle: 'Dismiss',
+      },
+    ]);
+  }
+
+  const sendNotification = () => {
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: "🧪 Test Notification!",
+        body: "This is a test.",
+        categoryIdentifier: "test-category",
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: 1,
+      },
+    });
+  };
 
   const patientData = localData.patients;
   const bgData = fetchBg();
@@ -59,7 +120,7 @@ export default function HomeScreen() {
         <View style={styles.bgCircle}>
           <ThemedText style={{ fontSize: 32 }}>
             {/* {patientData.find(patient => patient.patientSelected === true)?.patientCurrentBG} */}
-            {bgData}
+            {/*bgData*/} 100
           </ThemedText>
         </View>
       </ThemedView>
@@ -70,12 +131,13 @@ export default function HomeScreen() {
       </ThemedView>
       <ThemedView style={styles.suggestion}>
         <ThemedText >
-          Current Suggestion
+        {data.records.value}
         </ThemedText>
         <ThemedView style={styles.buttons}>
           {/* Make custom button for styling purposes */}
           <Button style={styles.button}>Accept</Button>
           <Button style={styles.button}>Reject</Button>
+          <Button style={styles.button} onPress={sendNotification}>Test</Button>
         </ThemedView>
       </ThemedView>
       <ThemedView>

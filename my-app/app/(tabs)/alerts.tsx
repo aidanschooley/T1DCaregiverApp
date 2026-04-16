@@ -57,6 +57,42 @@ export default function TabTwoScreen() {
           <ThemedText>Check Dexcom</ThemedText>
         </ThemedView>
       </View>
+      <View>
+        <ThemedView style={styles.generalAlertContainer}>
+          <ThemedText type="subtitle">Low Blood Sugar: 68</ThemedText>
+          <ThemedText>Eat carbs</ThemedText>
+        </ThemedView>
+      </View>
+      <View>
+        <ThemedView style={styles.generalAlertContainer}>
+          <ThemedText type="subtitle">No Signal</ThemedText>
+          <ThemedText>Check Dexcom</ThemedText>
+        </ThemedView>
+      </View>
+      <View>
+        <ThemedView style={styles.generalAlertContainer}>
+          <ThemedText type="subtitle">Low Blood Sugar: 68</ThemedText>
+          <ThemedText>Eat carbs</ThemedText>
+        </ThemedView>
+      </View>
+      <View>
+        <ThemedView style={styles.generalAlertContainer}>
+          <ThemedText type="subtitle">No Signal</ThemedText>
+          <ThemedText>Check Dexcom</ThemedText>
+        </ThemedView>
+      </View>
+      <View>
+        <ThemedView style={styles.generalAlertContainer}>
+          <ThemedText type="subtitle">Low Blood Sugar: 68</ThemedText>
+          <ThemedText>Eat carbs</ThemedText>
+        </ThemedView>
+      </View>
+      <View>
+        <ThemedView style={styles.generalAlertContainer}>
+          <ThemedText type="subtitle">No Signal</ThemedText>
+          <ThemedText>Check Dexcom</ThemedText>
+        </ThemedView>
+      </View>
 
     </ParallaxScrollView>
   );
