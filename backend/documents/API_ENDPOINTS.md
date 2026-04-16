@@ -117,6 +117,16 @@ Fetch the latest blood glucose data from Dexcom and store it in the database.
 ``
 
 
+GET /history
+Past hour for the graph
+
+GET /Suggestion
+Get Current Suggestion
+
+Get /Encouragement
+
+
+
 
 
 
