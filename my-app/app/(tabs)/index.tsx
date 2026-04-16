@@ -28,7 +28,7 @@ export default function HomeScreen() {
       .catch(error => {
         console.log('Error:', error);
       }); 
-  }, []);
+  });
 
   
   useEffect(() => {
