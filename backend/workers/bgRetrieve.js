@@ -17,4 +17,6 @@ cron.schedule('*/5 * * * *', async () => {
     const logMessage = `${timestamp} Current BG: ${dexcomData.value}\n`;
     console.log('Success: ' + logMessage);
 });
-  
+
+
+export default bgRetrieve;
