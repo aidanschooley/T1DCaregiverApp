@@ -1,0 +1,3 @@
+This is an app
+
+To start it in the terminal, run the command npx expo start (if you havent already, you may need to run npm install)
