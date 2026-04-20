@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
-import { useState, useEffect } from 'react';
-import { Platform, StyleSheet, View, Text } from 'react-native';
+import { useState, useEffect, useCallback } from 'react';
+import { Platform, StyleSheet, View, Text, RefreshControl, ScrollView } from 'react-native';
 import * as Notifications from 'expo-notifications';
 
 import ParallaxScrollView from '@/components/parallax-scroll-view';
@@ -19,7 +19,7 @@ export default function HomeScreen() {
 
   const [data, setData] = useState([]);
 
-  useEffect(() => {
+  const fetchData = () => {
     api.get('dexcom/api/bg/')
       .then(response => {
         setData(response.data["records"][0].value);
@@ -28,7 +28,24 @@ export default function HomeScreen() {
       .catch(error => {
         console.log('Error:', error);
       }); 
-  });
+  };
+
+  useEffect(() => {
+    fetchData(); 
+
+    const intervalId = setInterval(fetchData, 300000);
+    return () => clearInterval(intervalId);
+  },[]); 
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchData();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  }, []);
 
   
   useEffect(() => {
@@ -81,9 +98,11 @@ export default function HomeScreen() {
   const bgData = fetchBg();
   console.log(bgData);
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerHeight={0}>
+    <ScrollView
+    style={styles.viewContainer}
+    contentContainerStyle={{ gap: 20 }}
+      refreshControl = {<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
       <ThemedView style={styles.backContainer}>
         <Link href="/patient">
           <Link.Trigger>
@@ -145,11 +164,16 @@ export default function HomeScreen() {
           Current Encouragement
         </ThemedText>
       </ThemedView>
-    </ParallaxScrollView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  viewContainer: {
+    padding: 16,
+    marginTop: 26,  
+    backgroundColor: '#fff',
+  },
   backContainer: {
     gap: 8,
     marginBottom: 8,

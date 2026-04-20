@@ -1,6 +1,6 @@
 
 async function fetchBg(){
-const response = await fetch('http://localhost:3000/dexcom/api/bg', {
+const response = await fetch('https://t1dcaregiverapp.onrender.com/', {
   method: 'GET',
   headers: { 
     'Content-Type': 'application/x-www-form-urlencoded' 
