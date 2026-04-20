@@ -1,7 +1,9 @@
 import { Image } from 'expo-image';
 import { useState, useEffect, useCallback } from 'react';
-import { Platform, StyleSheet, View, Text, RefreshControl, ScrollView } from 'react-native';
+import { Platform, StyleSheet, View, Text, RefreshControl, ScrollView, Dimensions } from 'react-native';
 import * as Notifications from 'expo-notifications';
+
+import { LineChart } from "react-native-chart-kit";
 
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
@@ -27,15 +29,15 @@ export default function HomeScreen() {
       })
       .catch(error => {
         console.log('Error:', error);
-      }); 
+      });
   };
 
   useEffect(() => {
-    fetchData(); 
+    fetchData();
 
     const intervalId = setInterval(fetchData, 300000);
     return () => clearInterval(intervalId);
-  },[]); 
+  }, []);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -47,7 +49,26 @@ export default function HomeScreen() {
     }, 1000);
   }, []);
 
-  
+
+  const chartData = {
+    labels: ["January", "February", "March", "April", "May", "June"],
+    datasets: [
+      {
+        data: [
+          Math.random() * 250,
+          Math.random() * 200,
+          Math.random() * 250,        
+          Math.random() * 200,
+          Math.random() * 250,
+          Math.random() * 200
+        ], color: (opacity = 0) => `rgba(0, 0, 0, ${opacity})`, withDots: true
+      }, 
+      {data:[70, 70, 70, 70, 70, 70], color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`, withDots: false}, // red line for low threshold
+      {data:[180, 180, 180, 180, 180, 180], color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`, withDots: false}, // red line for high threshold
+    ]
+  }
+
+
   useEffect(() => {
     const configureNotificationsAsync = async () => {
       const { granted } = await Notifications.requestPermissionsAsync();
@@ -86,10 +107,10 @@ export default function HomeScreen() {
   console.log(bgData);
   return (
     <ScrollView
-    style={styles.viewContainer}
-    contentContainerStyle={{ gap: 20 }}
-      refreshControl = {<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      >
+      style={styles.viewContainer}
+      contentContainerStyle={{ gap: 20 }}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+    >
       <ThemedView style={styles.backContainer}>
         <Link href="/patient">
           <Link.Trigger>
@@ -100,7 +121,7 @@ export default function HomeScreen() {
                       name="chevron.left"
                     />
                   }*/}
-                  {patientData.find(patient => patient.patientSelected === true)?.patientName}
+              {patientData.find(patient => patient.patientSelected === true)?.patientName}
             </ThemedText>
           </Link.Trigger>
           <Link.Preview />
@@ -131,9 +152,39 @@ export default function HomeScreen() {
         </View>
       </ThemedView>
       <ThemedView style={styles.chart}>
-        <ThemedText>
-          Chart
-        </ThemedText>
+        <LineChart
+          data={chartData}
+          width={Dimensions.get("window").width - 46} 
+          height={Dimensions.get("window").width * 0.65} 
+          // yAxisSuffix="bg"
+          yAxisInterval={1} // optional, defaults to 1
+          fromNumber={250} //sets y axis range to 0-200 instead of lowest value to highest value
+          fromZero //starts y axis at 0 instead of lowest value
+          chartConfig={{
+            backgroundColor: "#ffffff",
+            backgroundGradientFrom: "#ffffff",
+            backgroundGradientTo: "#ffffff",
+            fillShadowGradientOpacity: 0,
+            fillShadowGradient: 'transparent',
+            useShadowColorFromDataset: true,
+            decimalPlaces: 0, // optional, defaults to 2dp
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            style: {
+              borderRadius: 16
+            },
+            propsForDots: {
+              r: "5", // size of dots
+              strokeWidth: "0", // size of white border around dots
+              stroke: "#ffffff"
+            }
+          }}
+          bezier //makes line curvy
+          style={{
+            marginVertical: 8,
+            borderRadius: 16
+          }}
+        />
       </ThemedView>
       <ThemedView style={styles.suggestion}>
         <ThemedText >
@@ -161,7 +212,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   viewContainer: {
     padding: 16,
-    marginTop: 26,  
+    marginTop: 26,
     backgroundColor: '#fff',
   },
   backContainer: {
@@ -179,13 +230,13 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     width: 150,
     height: 150,
-  }, 
+  },
   chart: {
     borderColor: '#808080',
     borderWidth: 2,
     borderRadius: 6,
     padding: 5,
-  }, 
+  },
   suggestion: {
     borderColor: '#808080',
     borderWidth: 2,
@@ -214,7 +265,7 @@ const styles = StyleSheet.create({
 
 // This is just a temporary placeholder for until we get this logic running with specific preferences through the backend
 function suggestion(data: string) {
-  const dataNum  = Number(data);
+  const dataNum = Number(data);
   if (dataNum > 180) {
     return "Your blood glucose is high. Consider taking insulin or doing physical activity.";
   } else if (dataNum < 70) {
