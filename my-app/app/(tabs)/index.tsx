@@ -67,19 +67,6 @@ export default function HomeScreen() {
     configureNotificationsAsync();
   }, []);
 
-  async function setInteractiveCategories() {
-    await Notifications.setNotificationCategoryAsync('test-category', [
-      {
-        identifier: 'YES_ACTION',
-        buttonTitle: 'Confirm',
-      },
-      {
-        identifier: 'NO_ACTION',
-        buttonTitle: 'Dismiss',
-      },
-    ]);
-  }
-
   const sendNotification = () => {
     Notifications.scheduleNotificationAsync({
       content: {
@@ -150,10 +137,12 @@ export default function HomeScreen() {
       </ThemedView>
       <ThemedView style={styles.suggestion}>
         <ThemedText >
-        Suggestion here
+          {/* This is just a temporary placeholder for until we get this logic running with specific preferences through the backend */}
+          {suggestion(String(data))}
         </ThemedText>
         <ThemedView style={styles.buttons}>
           {/* Make custom button for styling purposes */}
+          {/* Make these buttons not appear when bg is in normal range or if there is no suggestion */}
           <Button style={styles.button}>Accept</Button>
           <Button style={styles.button}>Reject</Button>
           <Button style={styles.button} onPress={sendNotification}>Test</Button>
@@ -161,7 +150,8 @@ export default function HomeScreen() {
       </ThemedView>
       <ThemedView>
         <ThemedText style={styles.text}>
-          Current Encouragement
+          {/* This is a temporary placeholder */}
+          You got this!
         </ThemedText>
       </ThemedView>
     </ScrollView>
@@ -220,3 +210,16 @@ const styles = StyleSheet.create({
     padding: 5,
   }
 });
+
+
+// This is just a temporary placeholder for until we get this logic running with specific preferences through the backend
+function suggestion(data: string) {
+  const dataNum  = Number(data);
+  if (dataNum > 180) {
+    return "Your blood glucose is high. Consider taking insulin or doing physical activity.";
+  } else if (dataNum < 70) {
+    return "Your blood glucose is low. Consider consuming carbohydrates.";
+  } else {
+    return "Your blood glucose is in the normal range. Keep up the good work!";
+  }
+};
