@@ -2,6 +2,7 @@ import { Image } from 'expo-image';
 import { useState, useEffect, useCallback } from 'react';
 import { Platform, StyleSheet, View, Text, RefreshControl, ScrollView, Dimensions } from 'react-native';
 import * as Notifications from 'expo-notifications';
+import { G, Rect } from 'react-native-svg';
 
 import { LineChart } from "react-native-chart-kit";
 
@@ -51,20 +52,27 @@ export default function HomeScreen() {
 
 
   const chartData = {
-    labels: ["January", "February", "March", "April", "May", "June"],
+    labels: ["1hr", "", "", "45min", "", "", "30min", "", "", "15min", "", "", "Now"],
     datasets: [
       {
         data: [
           Math.random() * 250,
-          Math.random() * 200,
-          Math.random() * 250,        
-          Math.random() * 200,
           Math.random() * 250,
-          Math.random() * 200
+          Math.random() * 250,
+          Math.random() * 250,
+          Math.random() * 250,
+          Math.random() * 250,
+          Math.random() * 250,
+          Math.random() * 250,
+          Math.random() * 250, 
+          Math.random() * 250,
+          Math.random() * 250,
+          Math.random() * 250,       
+          Math.random() * 250
         ], color: (opacity = 0) => `rgba(0, 0, 0, ${opacity})`, withDots: true
       }, 
-      {data:[70, 70, 70, 70, 70, 70], color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`, withDots: false}, // red line for low threshold
-      {data:[180, 180, 180, 180, 180, 180], color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`, withDots: false}, // red line for high threshold
+      {data:[70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70], color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`, withDots: false}, // red line for low threshold
+      {data:[180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180], color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`, withDots: false}, // red line for high threshold
     ]
   }
 
@@ -154,12 +162,15 @@ export default function HomeScreen() {
       <ThemedView style={styles.chart}>
         <LineChart
           data={chartData}
-          width={Dimensions.get("window").width - 46} 
-          height={Dimensions.get("window").width * 0.65} 
-          // yAxisSuffix="bg"
+          width={Dimensions.get("window").width - 60} 
+          height={Dimensions.get("window").width * 0.7} 
           yAxisInterval={1} // optional, defaults to 1
+          // yAxisSuffix=' mg/dL'
           fromNumber={250} //sets y axis range to 0-200 instead of lowest value to highest value
           fromZero //starts y axis at 0 instead of lowest value
+          segments={5} //number of horizontal lines is segments+1
+          withVerticalLines={false} //removes vertical lines
+          withHorizontalLines={true} // horizontal lines 
           chartConfig={{
             backgroundColor: "#ffffff",
             backgroundGradientFrom: "#ffffff",
@@ -179,10 +190,13 @@ export default function HomeScreen() {
               stroke: "#ffffff"
             }
           }}
+          onDataPointClick={(params) => {console.log({params});}} //work on this
           bezier //makes line curvy
           style={{
-            marginVertical: 8,
-            borderRadius: 16
+            marginTop: 27,
+            borderRadius: 16,
+            paddingBottom: 0, 
+            marginBottom: 0, 
           }}
         />
       </ThemedView>
@@ -235,7 +249,7 @@ const styles = StyleSheet.create({
     borderColor: '#808080',
     borderWidth: 2,
     borderRadius: 6,
-    padding: 5,
+    padding: 0,
   },
   suggestion: {
     borderColor: '#808080',
