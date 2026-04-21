@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { formatDexcomTime } from "./dexcom_time.js"
+import { formatDataRange } from "./formatDataRange.js"
 import tokenService from './tokenService.js'
 import pool from '../../config/database.js';
 import CGMReading from '../../models/CGMReading.js';
@@ -7,11 +7,8 @@ import CGMReading from '../../models/CGMReading.js';
 async function getCurrentBG() {
     try{
     const AuthToken = await tokenService()
-    const [startDate, endDate] = await formatDexcomTime();
-    const query = new URLSearchParams({ startDate, endDate }).toString();
+    const query = await formatDataRange();
  
-
-    
     const resp = await fetch(
     `https://sandbox-api.dexcom.com/v3/users/self/egvs?${query}`,
     {
@@ -29,10 +26,11 @@ async function getCurrentBG() {
     }
 
     const parsedData = JSON.parse(data);
+    console.log('Fetched BG data:', parsedData);
     const records = parsedData.records[0];
+    console.log('Fetched BG data:', records);
 
-    CGMReading.create(
-        1,                  
+    CGMReading.create(                  
         records.value,         
         records.trend,       
         records.systemTime     
