@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import { webcrypto } from 'node:crypto';
+globalThis.crypto = webcrypto;
 import * as oauth from 'oauth4webapi';
 import config from '../../config/dexcomClient.js';
 import pool from '../../config/database.js';
