@@ -9,10 +9,9 @@ router.get('/bg', async (req, res) => {
     try{
     const AuthToken = await tokenService()
     const [startDate, endDate] = await formatDexcomTime();
+    console.log('Fetching BG data from Dexcom API with startDate:', startDate, 'and endDate:', endDate);
     const query = new URLSearchParams({ startDate, endDate }).toString();
  
-
-    
     const resp = await fetch(
     `https://sandbox-api.dexcom.com/v3/users/self/egvs?${query}`,
     {
