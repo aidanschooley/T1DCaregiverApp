@@ -25,8 +25,8 @@ export default function HomeScreen() {
   const fetchData = () => {
     api.get('dexcom/api/bg/')
       .then(response => {
-        setData(response.data["records"][0].value);
-        console.log('Glucose Data:', response.data["records"][0].value);
+        setData(response.data.value);
+        console.log('Glucose Data:', response.data.value);
       })
       .catch(error => {
         console.log('Error:', error);
