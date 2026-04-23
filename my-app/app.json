@@ -18,7 +18,7 @@
     },
     "android": {
       "googleServicesFile": "./google-services.json",
-      "package": "com.aidanschooley.t1dcaregiverapp",
+      "package": "com.aidanschooley.t1dcaregiverapp3",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
