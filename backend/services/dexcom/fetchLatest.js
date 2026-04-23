@@ -36,7 +36,7 @@ async function fetchLatest() {
         history.push({ i, value, trend, systemTime });
     }
 
-    return {history, suggestion: "No Suggestions", encouragement: "Keep up the great work!"};
+    return {history, suggestion: "No Suggestion", encouragement: "Keep up the great work!"};
 
     } catch(err){
         console.error('BG fetch error:', err.message);
