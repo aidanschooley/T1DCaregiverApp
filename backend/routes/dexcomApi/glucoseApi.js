@@ -30,18 +30,7 @@ router.get('/bg', async (req, res) => {
 
     const parsedData = JSON.parse(data);
     const records = parsedData.records[0];
-    console.log('Latest BG Record:', records);
 
-//     await pool.query(
-//     `INSERT INTO cgm_reading (patient_id, bg_value, trend_arrow, created_at)
-//      VALUES ($1, $2, $3, $4)`,
-//     [
-//       1,                  
-//       records.value,         
-//       records.trend,       
-//       records.systemTime     
-//     ]
-//   );
     res.send(records);
 
     } catch(err){

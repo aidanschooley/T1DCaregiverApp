@@ -1,7 +1,7 @@
 export async function formatDataRange() {
     const endTime = new Date();
     const startTime = new Date(endTime);
-    startTime.setHours(endTime.getHours() - 1.5);
+    startTime.setHours(endTime.getHours() - 3);
 
     // Remove the Z for Dexcom format
     const startDate = startTime.toISOString().slice(0, 19);

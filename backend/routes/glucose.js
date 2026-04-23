@@ -1,6 +1,15 @@
 import express from 'express'
 import pool from '../config/database.js '
+import {fetchLatest} from '../services/dexcom/fetchLatest.js'
 const router = express.Router()
+// GET /api/glucose
+
+
+router.get('/latest', async (req, res) => {
+    const latestReading = await fetchLatest();
+    res.json(latestReading);
+});
+   
 
 router.get('/:patientId', async (req, res) => {
   try {
@@ -27,5 +36,7 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to insert glucose reading', details: err.message })
   }
 })
+
+   
 
 export default router

@@ -1,4 +1,4 @@
-package com.anonymous.myapp
+package com.aidanschooley.t1dcaregiverapp3
 
 import android.app.Application
 import android.content.res.Configuration

@@ -4,7 +4,7 @@ import tokenService from './tokenService.js'
 import pool from '../../config/database.js';
 import CGMReading from '../../models/CGMReading.js';
 
-async function getCurrentBG() {
+async function fetchLatest() {
     try{
     const AuthToken = await tokenService()
     const query = await formatDataRange();
@@ -26,13 +26,17 @@ async function getCurrentBG() {
     }
 
     const parsedData = JSON.parse(data);
-    const records = parsedData.records[0];
+    const records = parsedData.records;
+    const history = []
+    for (let i = 0; i < 20; i++) {
+        const record = records[i];
+        const value = record.value;
+        const trend = record.trend;
+        const systemTime = record.systemTime;
+        history.push({ i, value, trend, systemTime });
+    }
 
-    CGMReading.create(                  
-        records.value,         
-        records.trend,       
-        records.systemTime     
-    );
+    return {history, suggestion: "No Suggestions", encouragement: "Keep up the great work!"};
 
     } catch(err){
         console.error('BG fetch error:', err.message);
@@ -40,4 +44,4 @@ async function getCurrentBG() {
     }
 }
 
-export { getCurrentBG };
+export { fetchLatest };
