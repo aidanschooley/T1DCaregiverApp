@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "628956319264",
-    "project_id": "t1d-caregiver-app",
-    "storage_bucket": "t1d-caregiver-app.firebasestorage.app"
+    "project_number": "251752167193",
+    "project_id": "glucosecare-d91fe",
+    "storage_bucket": "glucosecare-d91fe.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:628956319264:android:dc714ab1933f66137cf645",
+        "mobilesdk_app_id": "1:251752167193:android:3bcfc9e7ac1d8260397788",
         "android_client_info": {
-          "package_name": "T1D.caregiver.app"
+          "package_name": "com.aidanschooley.t1dcaregiverapp"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCkNif4CYbZtzK2dhjFkYmnjt5sLP6PfJE"
+          "current_key": "AIzaSyAEcrs4Bv1yT24gaEMOq_KCI-bA7phzODA"
         }
       ],
       "services": {

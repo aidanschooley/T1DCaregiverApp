@@ -2,12 +2,13 @@
   "expo": {
     "name": "my-app",
     "slug": "my-app",
+    "owner": "aidanschooley",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.aidanschooley.t1dcaregiverapp",
@@ -16,6 +17,7 @@
       }
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "package": "com.aidanschooley.t1dcaregiverapp",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -31,6 +33,8 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/messaging",
       "expo-router",
       [
         "expo-splash-screen",
