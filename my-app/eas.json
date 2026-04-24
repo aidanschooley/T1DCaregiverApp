@@ -7,21 +7,18 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "prebuildCommand": "expo prebuild",
       "android": {
         "gradleCommand": ":app:assembleDebug"
       }
     },
     "preview": {
       "distribution": "internal",
-      "prebuildCommand": "expo prebuild",
       "android": {
         "buildType": "apk"
       }
     },
     "production": {
       "autoIncrement": true,
-      "prebuildCommand": "expo prebuild",
       "android": {
         "buildType": "apk"
       }
