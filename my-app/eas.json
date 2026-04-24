@@ -5,25 +5,25 @@
   },
   "build": {
     "development": {
-      "android": {
-        "gradleCommand": ":app:assembleDebug",
-        "googleServicesFile": "GOOGLE_SERVICES_JSON"
-      },
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "prebuildCommand": "expo prebuild",
+      "android": {
+        "gradleCommand": ":app:assembleDebug"
+      }
     },
     "preview": {
       "distribution": "internal",
+      "prebuildCommand": "expo prebuild",
       "android": {
-        "buildType": "apk",
-        "googleServicesFile": "GOOGLE_SERVICES_JSON"
+        "buildType": "apk"
       }
     },
     "production": {
       "autoIncrement": true,
+      "prebuildCommand": "expo prebuild",
       "android": {
-        "buildType": "apk",
-        "googleServicesFile": "GOOGLE_SERVICES_JSON"
+        "buildType": "apk"
       }
     }
   },
