@@ -1,4 +1,4 @@
-const messaging = require('./firebaseConfig');
+import messaging from './firebaseConfig.js';
 
 async function sendNotification(deviceToken, title, body) {
   const message = {
