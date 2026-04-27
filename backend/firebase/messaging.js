@@ -9,3 +9,5 @@ async function sendNotification(deviceToken, title, body) {
   const response = await messaging.send(message);
   console.log('Sent:', response);
 }
+
+export default sendNotification;
