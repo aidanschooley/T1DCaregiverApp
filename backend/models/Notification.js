@@ -8,4 +8,4 @@ class NotificationToken {
     }
 }
 
-module.exports = NotificationToken;
+export default NotificationToken;

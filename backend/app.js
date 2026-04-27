@@ -4,6 +4,7 @@ import glucose from './routes/glucose.js'
 import authentication from './routes/dexcomApi/authentication.js'
 import glucoseApi from './routes/dexcomApi/glucoseApi.js'
 import dataRange from './routes/dexcomApi/datarange.js'
+import notifications from './routes/notifications.js'
 import session from 'express-session'
 const app = express()
 
@@ -19,7 +20,7 @@ app.use('/api/glucose', glucose)
 app.use('/dexcom/auth', authentication)
 app.use('/dexcom/api', glucoseApi)
 app.use('/dexcom/api', dataRange)
-
+app.use(notifications)
 
 app.get('/', (req, res) => {
     res.json("Api running")

@@ -20,8 +20,6 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Fonts } from "@/constants/theme";
 import { Link } from "expo-router";
 import { Button } from "@react-navigation/elements";
-import fetchBg from "../../functions/fetchBg.js";
-
 import api from "../../functions/api.js";
 import localData from "@/testData/testPatientData.json";
 import useNotification from "../../src/notifications/useNotification.ts";
@@ -143,8 +141,6 @@ export default function HomeScreen() {
   // };
 
   const patientData = localData.patients;
-  const bgData = fetchBg();
-  console.log(bgData);
   return (
     <ScrollView
       style={styles.viewContainer}

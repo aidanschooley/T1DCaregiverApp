@@ -15,9 +15,17 @@ const useNotification = (userId: string | number = 1) => {
     }
   };
 
-  const registerToken = async (token: string) => {
+  const registerToken = async (token: string, retries = 3) => {
     setFcmToken(token);
-    await api.post('/registerFCMToken', { userId, fcmToken: token });
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        await api.post('/registerFCMToken', { userId, fcmToken: token });
+        return;
+      } catch {
+        if (attempt < retries) await new Promise(r => setTimeout(r, attempt * 3000));
+      }
+    }
+    if (__DEV__) console.log('FCM token registration failed after retries');
   };
 
   useEffect(() => {
@@ -27,10 +35,11 @@ const useNotification = (userId: string | number = 1) => {
       await requestPermission();
       try {
         const token = await messaging().getToken();
+        
         await registerToken(token);
         unsubscribe = messaging().onTokenRefresh(registerToken);
-      } catch (error) {
-        if (__DEV__) console.log('FCM unavailable:', error);
+      } catch {
+        console.log('Failed to get FCM token');
       }
     };
 
