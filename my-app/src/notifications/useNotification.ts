@@ -20,6 +20,7 @@ const useNotification = (userId: string | number = 1) => {
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
         await api.post('/registerFCMToken', { userId, fcmToken: token });
+        console.log('FCM token registered successfully');
         return;
       } catch {
         if (attempt < retries) await new Promise(r => setTimeout(r, attempt * 3000));
@@ -35,7 +36,8 @@ const useNotification = (userId: string | number = 1) => {
       await requestPermission();
       try {
         const token = await messaging().getToken();
-        
+        console.log('FCM token obtained:', token);
+
         await registerToken(token);
         unsubscribe = messaging().onTokenRefresh(registerToken);
       } catch {

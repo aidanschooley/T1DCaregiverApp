@@ -20,7 +20,7 @@ app.use('/api/glucose', glucose)
 app.use('/dexcom/auth', authentication)
 app.use('/dexcom/api', glucoseApi)
 app.use('/dexcom/api', dataRange)
-app.use(notifications)
+app.use('/api/notifications', notifications)
 
 app.get('/', (req, res) => {
     res.json("Api running")
