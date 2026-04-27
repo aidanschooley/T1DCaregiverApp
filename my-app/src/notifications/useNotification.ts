@@ -19,7 +19,7 @@ const useNotification = (userId: string | number = 1) => {
     setFcmToken(token);
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        await api.post('/registerFCMToken', { userId, fcmToken: token });
+        await api.post('api/notifications/registerFCMToken', { userId, fcmToken: token });
         console.log('FCM token registered successfully');
         return;
       } catch {
