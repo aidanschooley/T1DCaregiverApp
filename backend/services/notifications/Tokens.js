@@ -1,4 +1,4 @@
-import { NotificationToken } from '../../models/Notification.js';
+import NotificationToken from '../../models/Notification.js';
 
 export async function storeToken(userId, fcmToken) {
         const result = await NotificationToken.storeToken(userId, fcmToken);
