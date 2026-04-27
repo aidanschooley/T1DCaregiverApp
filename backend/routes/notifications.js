@@ -28,7 +28,7 @@ router.post('/sendNotification', async (req, res) => {
                 title: title,
                 body: body
             },
-            token: token
+            token: fcmToken
           };
           
     const response = await admin.messaging().send(message);
