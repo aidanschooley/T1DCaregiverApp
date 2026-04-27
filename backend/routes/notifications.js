@@ -28,7 +28,6 @@ router.post('/sendNotification', async (req, res) => {
                 title: title,
                 body: body
             },
-            data: data || {}, 
             token: token
           };
           
