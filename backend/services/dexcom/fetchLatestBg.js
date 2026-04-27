@@ -27,6 +27,7 @@ async function getCurrentBG() {
 
     const parsedData = JSON.parse(data);
     const records = parsedData.records[0];
+    return records;
 
     // CGMReading.create(                  
     //     records.value,         
