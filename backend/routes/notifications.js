@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import NotificationToken from '../models/Notification.js';
 import { storeToken, getToken } from '../services/notifications/Tokens.js';
 import sendNotification from '../firebase/messaging.js';
 
@@ -15,18 +14,17 @@ router.post('/registerFCMToken', async (req, res) => {
   }
 });
 
-export default router;
-
-
 router.post('/sendNotification', async (req, res) => {
   const { userId, title, body } = req.body;
   try {
     const fcmToken = await getToken(userId);
     if (!fcmToken) throw new Error(`No FCM token found for user ${userId}`);
-    
+
     await sendNotification(fcmToken, title, body);
     res.json({ success: true, message: 'Notification sent' });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
+export default router;
