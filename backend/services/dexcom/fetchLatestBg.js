@@ -28,11 +28,11 @@ async function getCurrentBG() {
     const parsedData = JSON.parse(data);
     const records = parsedData.records[0];
 
-    CGMReading.create(                  
-        records.value,         
-        records.trend,       
-        records.systemTime     
-    );
+    // CGMReading.create(                  
+    //     records.value,         
+    //     records.trend,       
+    //     records.systemTime     
+    // );
 
     } catch(err){
         console.error('BG fetch error:', err.message);

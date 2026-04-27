@@ -7,8 +7,8 @@ export async function formatDataRange() {
     const startDate = startTime.toISOString().slice(0, 19);
     const endDate = endTime.toISOString().slice(0, 19);
 
-    console.log(`Formatted Start Date: ${startDate}`);
-    console.log(`Formatted End Date: ${endDate}`);
+    // console.log(`Formatted Start Date: ${startDate}`);
+    // console.log(`Formatted End Date: ${endDate}`);
 
     const query = new URLSearchParams({ startDate, endDate }).toString();
     return query;
