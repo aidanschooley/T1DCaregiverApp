@@ -1,50 +1,45 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
-import firebase from '@react-native-firebase/app';
+import api from '../../functions/api.js';
 
-const useNotification = () => {
+const useNotification = (userId: string | number = 1) => {
+  const [fcmToken, setFcmToken] = useState<string | null>(null);
 
   const requestPermission = async () => {
-    if (Number(Platform.Version)  >= 33) {
+    if (Platform.OS === 'android' && Number(Platform.Version) >= 33) {
       const result = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
       );
       console.log('Notification permission result:', result);
     }
-    // Android < 33 grants notification permission automatically
   };
 
-  const getFCMToken = async () => {
-    try {
-      if (!firebase.apps.length) {
-        console.warn('Firebase not initialized yet, skipping FCM token fetch');
-        return;
-      }
-
-      const token = await messaging().getToken();
-      console.log('FCM Token:', token);
-      return token;
-    } catch (error) {
-      console.error('Failed to get FCM token:', error);
-    }
+  const registerToken = async (token: string) => {
+    setFcmToken(token);
+    await api.post('/registerFCMToken', { userId, fcmToken: token });
   };
 
   useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+
     const init = async () => {
       await requestPermission();
-      await getFCMToken();
+      try {
+        const token = await messaging().getToken();
+        await registerToken(token);
+        unsubscribe = messaging().onTokenRefresh(registerToken);
+      } catch (error) {
+        if (__DEV__) console.log('FCM unavailable:', error);
+      }
     };
 
     init();
 
-    const unsubscribe = messaging().onTokenRefresh(token => {
-      console.log('FCM Token refreshed:', token);
-    });
-
-    return unsubscribe;
+    return () => unsubscribe?.();
   }, []);
 
+  return { fcmToken };
 };
 
 export default useNotification;

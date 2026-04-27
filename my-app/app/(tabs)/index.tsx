@@ -9,7 +9,6 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import * as Notifications from "expo-notifications";
 import { G, Rect } from "react-native-svg";
 
 import { LineChart } from "react-native-chart-kit";
@@ -22,7 +21,6 @@ import { Fonts } from "@/constants/theme";
 import { Link } from "expo-router";
 import { Button } from "@react-navigation/elements";
 import fetchBg from "../../functions/fetchBg.js";
-import messaging from "@react-native-firebase/messaging";
 
 import api from "../../functions/api.js";
 import localData from "@/testData/testPatientData.json";
@@ -111,38 +109,38 @@ export default function HomeScreen() {
     ],
   };
 
-  useEffect(() => {
-    const configureNotificationsAsync = async () => {
-      const { granted } = await Notifications.requestPermissionsAsync();
-      if (!granted) {
-        return console.warn("⚠️ Notification Permissions not granted!");
-      }
+  // useEffect(() => {
+  //   const configureNotificationsAsync = async () => {
+  //     const { granted } = await Notifications.requestPermissionsAsync();
+  //     if (!granted) {
+  //       return console.warn("⚠️ Notification Permissions not granted!");
+  //     }
 
-      Notifications.setNotificationHandler({
-        handleNotification: async () => ({
-          shouldPlaySound: true, // Play sound when notification is received
-          shouldSetBadge: true, // Little red dot on app icon
-          shouldShowBanner: true, // Appearing on screen
-          shouldShowList: true, // Show in notification center (appears to show in center even when false?)
-        }),
-      });
-    };
-    configureNotificationsAsync();
-  }, []);
+  //     Notifications.setNotificationHandler({
+  //       handleNotification: async () => ({
+  //         shouldPlaySound: true, // Play sound when notification is received
+  //         shouldSetBadge: true, // Little red dot on app icon
+  //         shouldShowBanner: true, // Appearing on screen
+  //         shouldShowList: true, // Show in notification center (appears to show in center even when false?)
+  //       }),
+  //     });
+  //   };
+  //   configureNotificationsAsync();
+  // }, []);
 
-  const sendNotification = () => {
-    Notifications.scheduleNotificationAsync({
-      content: {
-        title: "🧪 Test Notification!",
-        body: "This is a test.",
-        categoryIdentifier: "test-category",
-      },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-        seconds: 1,
-      },
-    });
-  };
+  // const sendNotification = () => {
+  //   Notifications.scheduleNotificationAsync({
+  //     content: {
+  //       title: "🧪 Test Notification!",
+  //       body: "This is a test.",
+  //       categoryIdentifier: "test-category",
+  //     },
+  //     trigger: {
+  //       type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+  //       seconds: 1,
+  //     },
+  //   });
+  // };
 
   const patientData = localData.patients;
   const bgData = fetchBg();
@@ -254,9 +252,9 @@ export default function HomeScreen() {
           {/* Make these buttons not appear when bg is in normal range or if there is no suggestion */}
           <Button style={styles.button}>Accept</Button>
           <Button style={styles.button}>Reject</Button>
-          <Button style={styles.button} onPress={sendNotification}>
+          {/* <Button style={styles.button} onPress={sendNotification}>
             Test
-          </Button>
+          </Button> */}
         </ThemedView>
       </ThemedView>
       <ThemedView>
