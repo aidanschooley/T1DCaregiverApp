@@ -1,8 +1,5 @@
 import admin from 'firebase-admin';
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
-const serviceAccount = require('./glucosecare-d91fe-firebase-adminsdk-fbsvc-a8c1e9d7d9.json');
+import serviceAccount from './glucosecare-d91fe-firebase-adminsdk-fbsvc-a8c1e9d7d9.json' assert { type: 'json' };
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
