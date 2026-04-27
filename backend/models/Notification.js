@@ -1,6 +1,6 @@
 import pool from '../config/database.js';
 
-export class NotificationToken {
+export default class NotificationToken {
     static async storeToken(userId, fcmToken) {
         const query = `UPDATE caregiver SET fcm_token = $1 WHERE id = $2 RETURNING *`;
         const values = [String(fcmToken), userId];
