@@ -2,7 +2,6 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
-
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
 /**
@@ -88,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.aidanschooley.t1dcaregiverapp'
+    namespace 'com.aidanschooley.glucosecare'
     defaultConfig {
-        applicationId 'com.aidanschooley.t1dcaregiverapp'
+        applicationId 'com.aidanschooley.glucosecare'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -154,7 +153,6 @@ android {
 }
 
 dependencies {
-
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
@@ -182,6 +180,5 @@ dependencies {
         implementation jscFlavor
     }
 }
-
 
 apply plugin: 'com.google.gms.google-services'

@@ -11,14 +11,14 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aidanschooley.t1dcaregiverapp",
+      "bundleIdentifier": "com.aidanschooley.glucosecare",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
-      "googleServicesFile": "$GOOGLE_SERVICES_JSON",
-      "package": "com.aidanschooley.t1dcaregiverapp",
+      "googleServicesFile": "./google-services.json",
+      "package": "com.aidanschooley.glucosecare",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

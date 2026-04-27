@@ -1,4 +1,4 @@
-package com.aidanschooley.t1dcaregiverapp3
+package com.aidanschooley.glucosecare
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

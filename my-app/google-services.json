@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:251752167193:android:3bcfc9e7ac1d8260397788",
+        "mobilesdk_app_id": "1:251752167193:android:51153a79f441da97397788",
         "android_client_info": {
-          "package_name": "com.aidanschooley.t1dcaregiverapp"
+          "package_name": "com.aidanschooley.glucosecare"
         }
       },
       "oauth_client": [],

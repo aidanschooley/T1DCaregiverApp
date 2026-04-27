@@ -1,4 +1,4 @@
-package com.aidanschooley.t1dcaregiverapp3
+package com.aidanschooley.glucosecare
 
 import android.app.Application
 import android.content.res.Configuration
