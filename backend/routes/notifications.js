@@ -16,11 +16,25 @@ router.post('/registerFCMToken', async (req, res) => {
 
 export default router;
 
-router.get('/getFCMToken/:userId', async (req, res) => {
-  const { userId } = req.params;
+
+router.post('/sendNotification', async (req, res) => {
+  const { userId, title, body } = req.body;
   try {
-    const result = await getToken(userId);
-    res.json({ success: true, data: result });
+    const fcmToken = await getToken(userId);
+    if (!fcmToken) throw new Error(`No FCM token found for user ${userId}`);
+    
+    const message = {
+            notification: {
+                title: title,
+                body: body
+            },
+            data: data || {}, 
+            token: token
+          };
+          
+    const response = await admin.messaging().send(message);
+    console.log('Notification sent:', response);
+    res.json({ success: true, message: 'Notification sent' });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
