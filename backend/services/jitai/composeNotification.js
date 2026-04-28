@@ -4,13 +4,14 @@ import { sendNotification } from '../notifications/sendNotification.js';
 import { getPatientGlucoseSettingsByTime } from '../settings/patientGlucoseSettings.js';
 
 
-export async function composeNotification() {
+export async function composeNotification(bg) {
         const timestamp = new Date().toLocaleString();
-        const dexcomData = await getCurrentBG();
+        const bgValue = bg ?? (await getCurrentBG()).value;
         const settings = await getPatientGlucoseSettingsByTime(1, "normal");
-        const priority = await classifyPriority(dexcomData.value, settings);
-        await sendNotification(1, `Current BG: ${dexcomData.value} mg/dL`, priority);
-        const logMessage = `${timestamp} Current BG: ${dexcomData.value}\n`;
+        const priority = await classifyPriority(bgValue, settings);
+        console.log("Priority: ", priority)
+        await sendNotification(1, `Current BG: ${bgValue} mg/dL`, priority, priority);
+        const logMessage = `${timestamp} Current BG: ${bgValue}\n`;
         console.log('Success: ' + logMessage);
 }
 

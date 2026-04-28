@@ -35,4 +35,14 @@ router.post('/sendComposedNotification', async (req, res) =>{
 
 })
 
+router.post('/sendComposedNotification/:bg', async (req, res) =>{
+  try{
+    await composeNotification(req.params.bg)
+    res.json({success: true, message: "Notification Composed and Sent"})
+  }catch(error){
+    res.status(500).json({success:false, error: error.message})
+  }
+
+})
+
 export default router;
