@@ -9,10 +9,5 @@ export async function composeNotification(bg) {
         const bgValue = bg ?? (await getCurrentBG()).value;
         const settings = await getPatientGlucoseSettingsByTime(1, "normal");
         const priority = await classifyPriority(bgValue, settings);
-        console.log("Priority: ", priority)
-        await sendNotification(1, `Current BG: ${bgValue} mg/dL`, priority, priority);
-        const logMessage = `${timestamp} Current BG: ${bgValue}\n`;
-        console.log('Success: ' + logMessage);
+        await sendNotification(1, `Current BG: ${bgValue} mg/dL`, `Priority: ${priority}`, priority);
 }
-
-
