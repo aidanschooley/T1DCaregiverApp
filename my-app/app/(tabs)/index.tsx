@@ -23,8 +23,10 @@ import { Button } from "@react-navigation/elements";
 import api from "../../functions/api.js";
 import localData from "@/testData/testPatientData.json";
 import useNotification from "../../src/notifications/useNotification.ts";
+// import * as Notifications from "expo-notifications";
 
 export default function HomeScreen() {
+  const [currentBgData, setCurrentBgData] = useState([]);
   const [data, setData] = useState([]);
 
   useNotification();
@@ -33,7 +35,7 @@ export default function HomeScreen() {
     api
       .get("dexcom/api/bg/")
       .then((response) => {
-        setData(response.data.value);
+        setCurrentBgData(response.data.value);
         console.log("Glucose Data:", response.data.value);
       })
       .catch((error) => {
@@ -89,7 +91,7 @@ export default function HomeScreen() {
           Math.random() * 250,
           Math.random() * 250,
           Math.random() * 250,
-          Math.random() * 250,
+          Number(currentBgData)
         ],
         color: (opacity = 0) => `rgba(0, 0, 0, ${opacity})`,
         withDots: true,
@@ -192,7 +194,7 @@ export default function HomeScreen() {
 
       <ThemedView>
         <View style={styles.bgCircle}>
-          <ThemedText style={{ fontSize: 32 }}>{data}</ThemedText>
+          <ThemedText style={{ fontSize: 32 }}>{currentBgData}</ThemedText>
         </View>
       </ThemedView>
       <ThemedView style={styles.chart}>
@@ -241,16 +243,14 @@ export default function HomeScreen() {
       <ThemedView style={styles.suggestion}>
         <ThemedText>
           {/* This is just a temporary placeholder for until we get this logic running with specific preferences through the backend */}
-          {suggestion(String(data))}
+          {suggestion(String(currentBgData))}
         </ThemedText>
         <ThemedView style={styles.buttons}>
           {/* Make custom button for styling purposes */}
           {/* Make these buttons not appear when bg is in normal range or if there is no suggestion */}
           <Button style={styles.button}>Accept</Button>
           <Button style={styles.button}>Reject</Button>
-          {/* <Button style={styles.button} onPress={sendNotification}>
-            Test
-          </Button> */}
+          {/* <Button style={styles.button} onPress={sendNotification}>Test</Button> */}
         </ThemedView>
       </ThemedView>
       <ThemedView>
