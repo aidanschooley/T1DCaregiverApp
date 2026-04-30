@@ -27,7 +27,8 @@ import useNotification from "../../src/notifications/useNotification.ts";
 
 export default function HomeScreen() {
   const [currentBgData, setCurrentBgData] = useState([]);
-  const [data, setData] = useState([]);
+  const [currentChartData, setCurrentChartData] = useState([]);
+  //const [history, setHistory] = useState([]);
 
   useNotification();
 
@@ -43,8 +44,23 @@ export default function HomeScreen() {
       });
   };
 
+  const fetchChartData = () => {
+    api
+      .get("api/glucose/latest/")
+      .then((response) => {
+        //setHistory(response.data.history);
+        // This gets the chart data from history and reverses it so that the most recent data is at the end of the array for the chart
+        setCurrentChartData(response.data.history.map((item: { value: number; }) => item.value).reverse());
+        console.log("Chart Data:", response.data.history.map((item: { value: number; }) => item.value).reverse());
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  };
+
   useEffect(() => {
     fetchData();
+    fetchChartData();
 
     const intervalId = setInterval(fetchData, 300000);
     return () => clearInterval(intervalId);
@@ -55,6 +71,7 @@ export default function HomeScreen() {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchData();
+    fetchChartData();
     setTimeout(() => {
       setRefreshing(false);
     }, 1000);
@@ -62,16 +79,23 @@ export default function HomeScreen() {
 
   const chartData = {
     labels: [
+      "",
+      "1hr 30min",
+      "",
+      "",
+      "", // 1hr 15min
+      "",
+      "",
       "1hr",
+      "", 
       "",
-      "",
-      "45min",
+      "", // 45 min
       "",
       "",
       "30min",
       "",
       "",
-      "15min",
+      "", // 15 min
       "",
       "",
       "Now",
@@ -79,30 +103,21 @@ export default function HomeScreen() {
     datasets: [
       {
         data: [
-          Math.random() * 250,
-          Math.random() * 250,
-          Math.random() * 250,
-          Math.random() * 250,
-          Math.random() * 250,
-          Math.random() * 250,
-          Math.random() * 250,
-          Math.random() * 250,
-          Math.random() * 250,
-          Math.random() * 250,
-          Math.random() * 250,
-          Math.random() * 250,
-          Number(currentBgData)
+          // Iterates through all history bg data 
+          ...currentChartData, 
+          // Adds current bg if needed
+          // Number(currentBgData)
         ],
         color: (opacity = 0) => `rgba(0, 0, 0, ${opacity})`,
         withDots: true,
       },
       {
-        data: [70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70],
+        data: [70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70],
         color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
         withDots: false,
       }, // red line for low threshold
       {
-        data: [180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180],
+        data: [180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180],
         color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`,
         withDots: false,
       }, // red line for high threshold
@@ -207,7 +222,7 @@ export default function HomeScreen() {
           fromNumber={250} //sets y axis range to 0-200 instead of lowest value to highest value
           fromZero //starts y axis at 0 instead of lowest value
           segments={5} //number of horizontal lines is segments+1
-          withVerticalLines={false} //removes vertical lines
+          withVerticalLines={true} // vertical lines
           withHorizontalLines={true} // horizontal lines
           chartConfig={{
             backgroundColor: "#ffffff",
