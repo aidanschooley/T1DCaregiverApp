@@ -15,14 +15,26 @@
 | GET | `/api/glucose/:patientId` | Returns all glucose readings for a specific patient. |
 | POST | `/api/glucose/` | Creates a new glucose reading. |
 
+## Alerts (`/api/alerts`)
+
+Alerts represent clinical events — a blood glucose reading that crossed a threshold. An alert is logged to the database regardless of whether the push notification was successfully delivered.
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/alerts/:patientId` | Returns alert history for a patient. |
+| POST | `/api/alerts/` | Logs a triggered alert manually. |
+| PATCH | `/api/alerts/:id/acknowledge` | Marks an alert as seen/handled by the caregiver. |
+
 ## Notifications (`/api/notifications`)
+
+Notifications are the FCM push messages sent to a caregiver's device as a result of an alert. These endpoints manage push delivery — not the clinical events themselves.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/api/notifications/registerFCMToken` | Registers a device FCM token to enable push notifications. |
 | POST | `/api/notifications/sendNotification` | Sends a manually specified push notification. |
-| POST | `/api/notifications/sendComposedNotification` | Sends an auto-composed notification based on current patient state. |
-| POST | `/api/notifications/sendComposedNotification/:bg` | Sends an auto-composed notification using the provided blood glucose value. |
+| POST | `/api/notifications/sendComposedNotification` | Logs an alert and sends an auto-composed notification based on current patient state. |
+| POST | `/api/notifications/sendComposedNotification/:bg` | Logs an alert and sends an auto-composed notification using the provided blood glucose value. |
 
 ## Settings (`/api/settings`)
 
@@ -45,3 +57,36 @@
 |--------|----------|-------------|
 | GET | `/dexcom/api/bg` | Fetches the latest blood glucose reading from the Dexcom sandbox API. |
 | GET | `/dexcom/api/dataRange` | Returns the available date range of CGM data from Dexcom. |
+
+---
+
+## Needed
+
+### Auth (`/api/auth`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Creates a new caregiver account. |
+| POST | `/api/auth/login` | Authenticates a caregiver and returns a JWT. |
+| POST | `/api/auth/logout` | Invalidates the current session/token. |
+
+### Patient Management (`/api/patients`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/patients/` | Creates a new patient. |
+| PATCH | `/api/patients/:id` | Updates patient info. |
+| DELETE | `/api/patients/:id` | Removes a patient. |
+
+### Actions (`/api/actions`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/actions/:patientId` | Returns logged caregiver actions for a patient. |
+| POST | `/api/actions/` | Logs a caregiver action (e.g. insulin dose, carb intake). |
+
+### JITAI (`/api/jitai`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/jitai/evaluate/:patientId` | Runs the full JITAI pipeline: classify event, compose, and send notification. |

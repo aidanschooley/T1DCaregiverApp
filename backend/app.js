@@ -5,6 +5,7 @@ import session from 'express-session'
 import patient from './routes/patients.js'
 import glucose from './routes/glucose.js'
 import notifications from './routes/notifications.js'
+import alerts from './routes/alert.js'
 import settings from './routes/settings.js'
 
 // Dexcom routes
@@ -25,6 +26,7 @@ app.use(express.json())
 app.use('/api/patients', patient)
 app.use('/api/glucose', glucose)
 app.use('/api/notifications', notifications)
+app.use('/api/alerts', alerts)
 app.use('/api/settings', settings)
 
 // Dexcom routes
