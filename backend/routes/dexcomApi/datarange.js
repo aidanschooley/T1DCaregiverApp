@@ -3,6 +3,7 @@ import tokenService from '../../services/dexcom/tokenService.js'
 import {fetchDataRange} from '../../services/dexcom/fetchDataRange.js'
 const router = Router();
 
+// /dexcom/api
 router.get('/dataRange', async (req, res) => {
     try {
         const AuthToken = await tokenService()

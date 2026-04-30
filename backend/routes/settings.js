@@ -3,6 +3,7 @@ import { getSettings, getSettingsByTime, updateSettings } from '../controllers/s
 
 const router = express.Router()
 
+// /api/settings
 router.get('/getSettings/:patientId', getSettings)
 router.get('/getSettingsByTime/:patientId/:time', getSettingsByTime)
 router.post('/updateSettings', updateSettings)

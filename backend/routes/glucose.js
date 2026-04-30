@@ -3,6 +3,7 @@ import { getLatest, getByPatientId, createReading } from '../controllers/glucose
 
 const router = express.Router()
 
+// /api/glucose
 router.get('/latest', getLatest)
 router.get('/:patientId', getByPatientId)
 router.post('/', createReading)

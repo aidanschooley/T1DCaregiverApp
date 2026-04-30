@@ -3,8 +3,9 @@ import * as oauth from 'oauth4webapi';
 import config from '../../config/dexcomClient.js';
 import pool from '../../config/database.js';
 import "dotenv/config.js"
-// "/dexcom/auth"
 const router = Router();
+
+// /dexcom/auth
 
 // /dexcom/auth/login
 router.get('/login', async (req, res) => {

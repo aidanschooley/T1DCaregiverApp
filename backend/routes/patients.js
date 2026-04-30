@@ -3,6 +3,7 @@ import { getAllPatients, getPatientById } from '../controllers/patientController
 
 const router = express.Router()
 
+// /api/patients
 router.get('/', getAllPatients)
 router.get('/:id', getPatientById)
 

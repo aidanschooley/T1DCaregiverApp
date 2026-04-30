@@ -8,6 +8,7 @@ import {
 
 const router = Router()
 
+// /api/notifications
 router.post('/registerFCMToken', registerFCMToken)
 router.post('/sendNotification', sendManualNotification)
 router.post('/sendComposedNotification', sendComposedNotification)

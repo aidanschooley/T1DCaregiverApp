@@ -1,136 +1,36 @@
-# T1D Caregiver App - API Endpoints Documentation
+API Endpoints
+=============
 
-## Base URL
-```
-http://localhost:3000
-https://t1dcaregiverapp.onrender.com/
-```
+Patients  (/api/patients)
+--------------------------
+GET  /api/patients/        Returns all patients in the database.
+GET  /api/patients/:id     Returns a single patient by their ID.
 
-## Health Check
+Glucose  (/api/glucose)
+------------------------
+GET  /api/glucose/latest          Returns the most recent glucose reading across all patients.
+GET  /api/glucose/:patientId      Returns all glucose readings for a specific patient.
+POST /api/glucose/                Creates a new glucose reading.
 
-### GET /
-Health check endpoint to verify the API is running.
+Notifications  (/api/notifications)
+------------------------------------
+POST /api/notifications/registerFCMToken                  Registers a device FCM token to enable push notifications.
+POST /api/notifications/sendNotification                  Sends a manually specified push notification.
+POST /api/notifications/sendComposedNotification          Sends an auto-composed notification based on current patient state.
+POST /api/notifications/sendComposedNotification/:bg      Sends an auto-composed notification using the provided blood glucose value.
 
-**Response:**
-```json
-"Api running"
-```
+Settings  (/api/settings)
+--------------------------
+GET  /api/settings/getSettings/:patientId                 Returns the current alert/threshold settings for a patient.
+GET  /api/settings/getSettingsByTime/:patientId/:time     Returns the settings that were active for a patient at a given time.
+POST /api/settings/updateSettings                         Updates alert/threshold settings for a patient.
 
----
+Dexcom Auth  (/dexcom/auth)
+----------------------------
+GET  /dexcom/auth/login       Redirects to the Dexcom OAuth login page to begin authorization.
+GET  /dexcom/auth/callback    Handles the OAuth callback and stores the access/refresh tokens.
 
-## Patients API
-
-### GET /api/patients
-Retrieve all patients from the database.
-
-**Response (200 OK):**
-```json
-[
-  {
-    "id": 1,
-    "name": "Patient Name",
-    "email": "patient@example.com",
-    ...
-  }
-]
-```
-
----
-
-### GET /api/patients/:id
-Retrieve a specific patient by ID.
-
-**Parameters:**
-- `id` (string, required): Patient ID
-
-**Response (200 OK):**
-```json
-[
-  {
-    "id": 1,
-    "name": "Patient Name",
-    "email": "patient@example.com",
-    ...
-  }
-]
-
-```
-## Dexcom Authentication API
-
-### GET /dexcom/auth/login
-Initiates the Dexcom OAuth 2.0 login flow. Redirects to Dexcom's authorization endpoint.
-
-**Response:**
-- Redirects to Dexcom authorization URL
-- Stores OAuth state in session for validation
-
-
-### GET /dexcom/auth/callback
-OAuth 2.0 callback endpoint for Dexcom authentication. Handles the authorization code exchange and token storage.
-
-**Query Parameters:**
-- `code` (string): Authorization code from Dexcom
-- `state` (string): State parameter for CSRF protection
-- `error` (string, optional): Error code if authorization failed
-
-**Response (200 OK):**
-```
-Successfully Got Token
-```
-
-
-## Dexcom API
-
-### GET /dexcom/api/dataRange
-Retrieve the data range of available glucose readings from Dexcom.
-
-
-**Response (200 OK):**
-```json
-{
-  "dataRange": {
-    "egvs": {
-      "firstRecordTime": "2024-04-15T08:00:00Z",
-      "lastRecordTime": "2024-04-15T10:30:00Z"
-    }
-  }
-}
-
-
-### GET /dexcom/api/bg
-Fetch the latest blood glucose data from Dexcom and store it in the database.
-
-
-**Response (200 OK):**
-```json
-{
-  "records": [
-    {
-      "systemTime": "2024-04-15T10:30:00Z",
-      "displayTime": "2024-04-15T10:30:00Z",
-      "value": 120,
-      "trend": "FLAT",
-      "trendRate": 0
-    }
-  ]
-}
-``
-
-
-GET /history
-Past hour for the graph
-
-GET /Suggestion
-Get Current Suggestion
-
-Get /Encouragement
-
-
-
-
-
-
-
-
-
-
+Dexcom API  (/dexcom/api)
+--------------------------
+GET  /dexcom/api/bg           Fetches the latest blood glucose reading from the Dexcom sandbox API.
+GET  /dexcom/api/dataRange    Returns the available date range of CGM data from Dexcom.
