@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Image } from 'expo-image';
-import { View, Platform, StyleSheet, Pressable, TextInput } from 'react-native';
+import { View, Platform, StyleSheet, Pressable, TextInput, Settings } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
 import { Collapsible } from '@/components/ui/collapsible';
@@ -10,6 +10,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
+import api from "../../functions/api.js";
 
 const hiNumberData = Array.from({ length: (200-125)+1 }, (_, i) => ({
   label: `${i + 125}`,
@@ -28,6 +29,45 @@ export default function TabTwoScreen() {
   // Default values for night alerts
   const [loNightValue, setLoNightValue] = useState(1);
   const [hiNightValue, setHiNightValue] = useState(76);
+
+  interface SettingsData {
+    patientId: number, 
+    lowThreshold: number, 
+    highThreshold: number, 
+    time: string
+  }
+  const [settingsId, setSettingsId] = useState(1);
+  const [settingsLow, setSettingsLow] = useState(70);
+  const [settingsHigh, setSettingsHigh] = useState(200);
+  const [settingsTime, setSettingsTime] = useState('normal');
+  const settingsData: SettingsData = {
+    patientId: settingsId,
+    lowThreshold: settingsLow,
+    highThreshold: settingsHigh,
+    time: settingsTime
+  }
+
+  const updateSettings = async (settingsData: any) => {
+    try {
+      const response = await fetch('api/settings/updateSettings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(settingsData),
+      });
+      //console.log("Settings data sent to backend: ", settingsData)
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('Post error:', error);
+    }
+  };
 
   return (
     <ParallaxScrollView
@@ -72,6 +112,10 @@ export default function TabTwoScreen() {
           selectedTextStyle={{ color: '#000000' }}
           onChange={item => {
             setLoValue(item.value);
+            //post to backend
+            setSettingsLow(item.value)
+            setSettingsTime("normal")
+            updateSettings(settingsData);
           }}
         />
       </View>

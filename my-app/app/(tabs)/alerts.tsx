@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View, Text } from 'react-native';
+import { ScrollView, RefreshControl } from 'react-native';
 
 import { Collapsible } from '@/components/ui/collapsible';
 import { ExternalLink } from '@/components/external-link';
@@ -8,12 +9,42 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
+import { useState, useCallback } from 'react';
+import api from "../../functions/api.js";
 
 export default function TabTwoScreen() {
+  const [alertData, setAlertData] = useState([]);
+  const [bgData, setBgData] = useState([]);
+
+  const fetchAlertData = () => {
+    api
+      .get("api/glucose/1/")
+      .then((response) => {
+        setAlertData(response.data);
+        //console.log("Alert Bg Data:", response.data);
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  };
+
+  const [refreshing, setRefreshing] = useState(false);
+  
+    const onRefresh = useCallback(() => {
+      setRefreshing(true);
+      fetchAlertData();
+      setTimeout(() => {
+        setRefreshing(false);
+      }, 1000);
+    }, []);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#90EE90', dark: '#77DD77' }}
-      headerHeight={0}>
+    <ScrollView
+      style={styles.viewContainer}
+      contentContainerStyle={{ gap: 20 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
       <ThemedView style={styles.titleContainer}>
         <ThemedText
           type="title"
@@ -24,8 +55,16 @@ export default function TabTwoScreen() {
           Alerts
         </ThemedText>
       </ThemedView>
-      <ThemedText type="subtitle" style={{ paddingHorizontal: 16 }}>Friday Mar 13</ThemedText>
-      <View>
+      {alertData.map((item: { bg_value: string; id: string; created_at: string; }) => (
+      <View key={item.id}>
+        <ThemedView style={styles.generalAlertContainer}>
+          <ThemedText type="subtitle"> Blood Sugar: {item.bg_value}</ThemedText>
+          <ThemedText>TIme: {item.created_at}</ThemedText>
+        </ThemedView>
+      </View>
+      ))}
+      {/* <ThemedText type="subtitle" style={{ paddingHorizontal: 16 }}>Friday Mar 13</ThemedText> */}
+      {/* <View>
         <ThemedView style={styles.generalAlertContainer}>
           <ThemedText type="subtitle">Low Blood Sugar: 68</ThemedText>
           <ThemedText>Eat carbs</ThemedText>
@@ -92,13 +131,18 @@ export default function TabTwoScreen() {
           <ThemedText type="subtitle">No Signal</ThemedText>
           <ThemedText>Check Dexcom</ThemedText>
         </ThemedView>
-      </View>
+      </View> */}
 
-    </ParallaxScrollView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  viewContainer: {
+    padding: 16,
+    marginTop: 26,
+    backgroundColor: "#fff",
+  },
   headerImage: {
     color: '#808080',
     bottom: -90,
