@@ -31,20 +31,26 @@ export default function TabTwoScreen() {
   const [hiNightValue, setHiNightValue] = useState(76);
 
   interface SettingsData {
-    patientId: number, 
-    lowThreshold: number, 
-    highThreshold: number, 
+    patientId: number,
+    lowThreshold: number,
+    highThreshold: number,
+    urgentHighThreshold: number,
+    urgentLowThreshold: number,
     time: string
   }
   const [settingsId, setSettingsId] = useState(1);
   const [settingsLow, setSettingsLow] = useState(70);
+  const [settingsUrgentLow, setSettingsUrgentLow] = useState(50);
   const [settingsHigh, setSettingsHigh] = useState(200);
+  const [settingsUrgentHigh, setSettingsUrgentHigh] = useState(250);
   const [settingsTime, setSettingsTime] = useState('normal');
   const settingsData: SettingsData = {
-    patientId: settingsId,
-    lowThreshold: settingsLow,
-    highThreshold: settingsHigh,
-    time: settingsTime
+    patientId: 1,
+    lowThreshold: 70,
+    highThreshold: 200,
+    urgentHighThreshold: 250,
+    urgentLowThreshold: 50,
+    time: "normal"
   }
 
   const updateSettings = async (settingsData: any) => {
@@ -113,7 +119,7 @@ export default function TabTwoScreen() {
           onChange={item => {
             setLoValue(item.value);
             //post to backend
-            setSettingsLow(item.value)
+            setSettingsLow(loValue)
             setSettingsTime("normal")
             updateSettings(settingsData);
           }}
