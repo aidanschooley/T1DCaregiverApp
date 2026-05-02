@@ -20,9 +20,9 @@ async function getPatientGlucoseSettingsByTime(patientId, time) {
     }
 }
 
-async function updatePatientGlucoseSettings(patientId, lowThreshold, highThreshold, time) {
+async function updatePatientGlucoseSettings(patientId, lowThreshold, highThreshold, urgentHighThreshold, urgentLowThreshold, time) {
     try {
-        const updatedSettings = await PatientGlucoseSettings.updateSettings(patientId, lowThreshold, highThreshold, time);
+        const updatedSettings = await PatientGlucoseSettings.updateSettings(patientId, lowThreshold, highThreshold, urgentHighThreshold, urgentLowThreshold, time);
         return updatedSettings;
     } catch (error) {
         console.error(`Error updating glucose settings for patient ${patientId}:`, error);

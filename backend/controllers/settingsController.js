@@ -23,9 +23,9 @@ export async function getSettingsByTime(req, res) {
 }
 
 export async function updateSettings(req, res) {
-  const { patientId, lowThreshold, highThreshold, time } = req.body;
+  const { patientId, lowThreshold, highThreshold, urgentHighThreshold, urgentLowThreshold, time } = req.body;
   try {
-    const updatedSettings = await updatePatientGlucoseSettings(patientId, lowThreshold, highThreshold, time);
+    const updatedSettings = await updatePatientGlucoseSettings(patientId, lowThreshold, highThreshold, urgentHighThreshold, urgentLowThreshold, time);
     res.json(updatedSettings);
   } catch (error) {
     res.status(500).json({ error: error.message });
