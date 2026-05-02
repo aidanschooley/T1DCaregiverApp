@@ -208,7 +208,7 @@ export default function HomeScreen() {
       </ThemedView>
 
       <ThemedView>
-        <View style={styles.bgCircle}>
+        <View style={[styles.bgCircle, (Number(currentBgData)<70) && styles.bgCircleLow]}>
           <ThemedText style={{ fontSize: 32 }}>{currentBgData}</ThemedText>
         </View>
       </ThemedView>
@@ -290,6 +290,18 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   bgCircle: {
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    textAlign: "center",
+    borderColor: "#808080",
+    borderWidth: 2,
+    borderRadius: 100,
+    width: 150,
+    height: 150,
+  },
+  bgCircleLow: {
+    boxShadow: '0px 0px 20px rgba(255, 0, 0, .5)',
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
