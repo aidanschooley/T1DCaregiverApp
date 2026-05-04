@@ -11,24 +11,61 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
 import api from "../../functions/api.js";
+import { Button } from '@react-navigation/elements';
 
-const hiNumberData = Array.from({ length: (200-125)+1 }, (_, i) => ({
-  label: `${i + 125}`,
-  value: i + 1,
-}));
+// const hiNumberData = Array.from({ length: (200-125)+1 }, (_, i) => ({
+//   label: `${i + 125}`,
+//   value: i + 1,
+// }));
 
-const loNumberData = Array.from({ length: (100-70)+1 }, (_, i) => ({
-  label: `${i + 70}`,
-  value: i + 1,
-}));
+// const loNumberData = Array.from({ length: (100-70)+1 }, (_, i) => ({
+//   label: `${i + 70}`,
+//   value: i + 1,
+// }));
 
 export default function TabTwoScreen() {
   // Default values for general alerts
-  const [loValue, setLoValue] = useState(1);
-  const [hiValue, setHiValue] = useState(26);
+  const [loValue, setLoValue] = useState(70);
+  const loNumberData = Array.from({ length: 21 }, (_, i) => ({
+    label: `${70 + i}`, // Display value
+    value: 70 + i,      // Actual value
+  }));
+  const [urgentLoValue, setUrgentLoValue] = useState(50);
+  const urgentLoNumberData = Array.from({ length: 41 }, (_, i) => ({
+    label: `${50 + i}`, // Display value
+    value: 50 + i,      // Actual value
+  }));
+  const [hiValue, setHiValue] = useState(150);
+  const hiNumberData = Array.from({ length: 71 }, (_, i) => ({
+    label: `${130 + i}`, // Display value
+    value: 130 + i,      // Actual value
+  }));
+  const [urgentHiValue, setUrgentHiValue] = useState(200);
+  const urgentHiNumberData = Array.from({ length: 71 }, (_, i) => ({
+    label: `${180 + i}`, // Display value
+    value: 180 + i,      // Actual value
+  }));
   // Default values for night alerts
-  const [loNightValue, setLoNightValue] = useState(1);
-  const [hiNightValue, setHiNightValue] = useState(76);
+  const [loNightValue, setLoNightValue] = useState(70);
+  const loNightNumberData = Array.from({ length: 41 }, (_, i) => ({
+    label: `${50 + i}`, // Display value
+    value: 50 + i,      // Actual value
+  }));
+  const [urgentLoNightValue, setUrgentLoNightValue] = useState(50);
+  const urgentLoNightNumberData = Array.from({ length: 41 }, (_, i) => ({
+    label: `${50 + i}`, // Display value
+    value: 50 + i,      // Actual value
+  }));
+  const [hiNightValue, setHiNightValue] = useState(180);
+  const hiNightNumberData = Array.from({ length: 71 }, (_, i) => ({
+    label: `${130 + i}`, // Display value
+    value: 130 + i,      // Actual value
+  }));
+  const [urgentHiNightValue, setUrgentHiNightValue] = useState(250);
+  const urgentHiNightNumberData = Array.from({ length: 71 }, (_, i) => ({
+    label: `${180 + i}`, // Display value
+    value: 180 + i,      // Actual value
+  }));
 
   interface SettingsData {
     patientId: number,
@@ -43,19 +80,31 @@ export default function TabTwoScreen() {
   const [settingsUrgentLow, setSettingsUrgentLow] = useState(50);
   const [settingsHigh, setSettingsHigh] = useState(200);
   const [settingsUrgentHigh, setSettingsUrgentHigh] = useState(250);
-  const [settingsTime, setSettingsTime] = useState('normal');
   const settingsData: SettingsData = {
-    patientId: 1,
-    lowThreshold: 70,
-    highThreshold: 200,
-    urgentHighThreshold: 250,
-    urgentLowThreshold: 50,
+    patientId: settingsId,
+    lowThreshold: settingsLow,
+    highThreshold: settingsHigh,
+    urgentHighThreshold: settingsUrgentHigh,
+    urgentLowThreshold: settingsUrgentLow,
     time: "normal"
+  }
+
+  const [settingsNightLow, setSettingsNightLow] = useState(70);
+  const [settingsUrgentNightLow, setSettingsUrgentNightLow] = useState(50);
+  const [settingsNightHigh, setSettingsNightHigh] = useState(200);
+  const [settingsUrgentNightHigh, setSettingsUrgentNightHigh] = useState(250);
+  const settingsNightData: SettingsData = {
+    patientId: settingsId,
+    lowThreshold: settingsNightLow,
+    highThreshold: settingsNightHigh,
+    urgentHighThreshold: settingsUrgentNightHigh,
+    urgentLowThreshold: settingsUrgentNightLow,
+    time: "night"
   }
 
   const updateSettings = async (settingsData: any) => {
     try {
-      const response = await fetch('api/settings/updateSettings', {
+      const response = await fetch('https://t1dcaregiverapp.onrender.com/api/settings/updateSettings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +149,34 @@ export default function TabTwoScreen() {
 
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="subtitle">General Alerts</ThemedText>
+        <View>
+        <Button 
+          onPress={() => {updateSettings(settingsData);}}>
+          Save General Settings
+        </Button>
+      </View>
       </ThemedView>   
+      <View style={styles.settingsBox}>
+        <View>
+          <ThemedText>
+            Urgent Low Blood Sugar
+          </ThemedText>
+        </View>
+        <Dropdown
+          style={styles.dropdown}
+          data={urgentLoNumberData}
+          labelField='label'
+          valueField='value'
+          value={urgentLoValue}
+          autoScroll={false}
+          placeholderStyle={{ color: '#808080' }}
+          selectedTextStyle={{ color: '#000000' }}
+          onChange={item => {
+            setUrgentLoValue(item.value);
+            setSettingsUrgentLow(item.value);
+          }}
+        />
+      </View>
       <View style={styles.settingsBox}>
         <View>
           <ThemedText>
@@ -118,10 +194,7 @@ export default function TabTwoScreen() {
           selectedTextStyle={{ color: '#000000' }}
           onChange={item => {
             setLoValue(item.value);
-            //post to backend
-            setSettingsLow(loValue)
-            setSettingsTime("normal")
-            updateSettings(settingsData);
+            setSettingsLow(item.value);
           }}
         />
       </View>
@@ -142,13 +215,60 @@ export default function TabTwoScreen() {
           selectedTextStyle={{ color: '#000000' }}
           onChange={item => {
             setHiValue(item.value);
+            setSettingsHigh(item.value);
+          }}
+        />
+      </View>  
+      <View style={styles.settingsBox}>
+        <View>
+          <ThemedText>
+            Urgent High Blood Sugar
+          </ThemedText>
+        </View>
+        <Dropdown
+          style={styles.dropdown}
+          data={urgentHiNumberData.reverse()}
+          labelField='label'
+          valueField='value'
+          value={urgentHiValue}
+          autoScroll={false}
+          placeholderStyle={{ color: '#808080' }}
+          selectedTextStyle={{ color: '#000000' }}
+          onChange={item => {
+            setUrgentHiValue(item.value);
+            setSettingsUrgentHigh(item.value);
           }}
         />
       </View>   
 
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="subtitle">Night Alerts</ThemedText>
+        <Button 
+          onPress={() => {updateSettings(settingsNightData);}}>
+          Save Night Settings
+        </Button>
       </ThemedView>
+      <View style={styles.settingsBox}>
+        <View>
+          <ThemedText>
+            Urgent Low Blood Sugar
+          </ThemedText>
+        </View>
+        <Dropdown
+          style={styles.dropdown}
+          data={urgentLoNightNumberData}
+          labelField='label'
+          valueField='value'
+          value={urgentLoNightValue}
+          autoScroll={false}
+          placeholderStyle={{ color: '#808080' }}
+          selectedTextStyle={{ color: '#000000' }}
+          onChange={item => {
+            setUrgentLoNightValue(item.value);
+            setSettingsUrgentNightLow(item.value);
+          }}
+        />
+      </View>
       <View style={styles.settingsBox}>
         <View>
           <ThemedText>
@@ -157,7 +277,7 @@ export default function TabTwoScreen() {
         </View>
         <Dropdown
           style={styles.dropdown}
-          data={loNumberData}
+          data={loNightNumberData}
           labelField='label'
           valueField='value'
           value={loNightValue}
@@ -166,6 +286,7 @@ export default function TabTwoScreen() {
           selectedTextStyle={{ color: '#000000' }}
           onChange={item => {
             setLoNightValue(item.value);
+            setSettingsNightLow(item.value);
           }}
         />
       </View>
@@ -177,7 +298,7 @@ export default function TabTwoScreen() {
         </View>
         <Dropdown
           style={styles.dropdown}
-          data={hiNumberData}
+          data={hiNightNumberData.reverse()}
           labelField='label'
           valueField='value'
           value={hiNightValue}
@@ -188,6 +309,30 @@ export default function TabTwoScreen() {
           selectedTextStyle={{ color: '#000000' }}
           onChange={item => {
             setHiNightValue(item.value);
+            setSettingsNightHigh(item.value);
+          }}
+        />
+      </View>
+      <View style={styles.settingsBox}>
+        <View>
+          <ThemedText>
+            Urgent High Blood Sugar
+          </ThemedText>
+        </View>
+        <Dropdown
+          style={styles.dropdown}
+          data={urgentHiNightNumberData}
+          labelField='label'
+          valueField='value'
+          value={urgentHiNightValue}
+          autoScroll={false}
+          dropdownPosition='top'
+          inverted={false}
+          placeholderStyle={{ color: '#808080' }}
+          selectedTextStyle={{ color: '#000000' }}
+          onChange={item => {
+            setUrgentHiNightValue(item.value);
+            setSettingsUrgentNightHigh(item.value);
           }}
         />
       </View>
