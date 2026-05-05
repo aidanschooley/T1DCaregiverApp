@@ -1,19 +1,23 @@
 import { useEffect, useState } from 'react';
-import { PermissionsAndroid, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
-import notifee, { AndroidImportance } from '@notifee/react-native';
+import * as Notifications from 'expo-notifications';
 import api from '../../functions/api.js';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const useNotification = (userId: string | number = 1) => {
   const [fcmToken, setFcmToken] = useState<string | null>(null);
 
   const requestPermission = async () => {
-    if (Platform.OS === 'android' && Number(Platform.Version) >= 33) {
-      const result = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
-      );
-      console.log('Notification permission result:', result);
-    }
+    const { status } = await Notifications.requestPermissionsAsync();
+    console.log('Notification permission result:', status);
   };
 
   const registerToken = async (token: string, retries = 3) => {
@@ -35,11 +39,14 @@ const useNotification = (userId: string | number = 1) => {
 
     const init = async () => {
       await requestPermission();
-      await notifee.createChannel({
-        id: 'glucose-alerts',
-        name: 'Glucose Alerts',
-        importance: AndroidImportance.HIGH,
-      });
+
+      if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('glucose-alerts', {
+          name: 'Glucose Alerts',
+          importance: Notifications.AndroidImportance.HIGH,
+        });
+      }
+
       try {
         const token = await messaging().getToken();
         console.log('FCM token obtained:', token);
@@ -55,14 +62,10 @@ const useNotification = (userId: string | number = 1) => {
 
     const unsubscribeForeground = messaging().onMessage(async remoteMessage => {
       const { title, body } = remoteMessage.notification ?? {};
-      await notifee.displayNotification({
-        title,
-        body,
-        android: {
-          channelId: 'glucose-alerts',
-          importance: AndroidImportance.HIGH,
-          pressAction: { id: 'default' },
-        },
+      await Notifications.scheduleNotificationAsync({
+        content: { title: title ?? '', body: body ?? '', sound: true },
+        trigger: null,
+        ...(Platform.OS === 'android' && { channelId: 'glucose-alerts' }),
       });
     });
 

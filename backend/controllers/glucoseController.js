@@ -2,8 +2,13 @@ import pool from '../config/database.js'
 import { fetchLatest } from '../services/dexcom/fetchLatest.js'
 
 export async function getLatest(req, res) {
-  const latestReading = await fetchLatest();
-  res.json(latestReading);
+  try {
+    const latestReading = await fetchLatest();
+    res.json(latestReading);
+  } catch (err) {
+    console.error('fetchLatest error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch latest glucose', details: err.message });
+  }
 }
 
 export async function getByPatientId(req, res) {
