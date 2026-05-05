@@ -4,7 +4,6 @@ import session from 'express-session'
 // App routes
 import patient from './routes/patients.js'
 import glucose from './routes/glucose.js'
-import notifications from './routes/notifications.js'
 import alerts from './routes/alert.js'
 import settings from './routes/settings.js'
 
@@ -25,7 +24,6 @@ app.use(express.json())
 // App routes
 app.use('/api/patients', patient)
 app.use('/api/glucose', glucose)
-app.use('/api/notifications', notifications)
 app.use('/api/alerts', alerts)
 app.use('/api/settings', settings)
 

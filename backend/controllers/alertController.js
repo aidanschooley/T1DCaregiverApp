@@ -11,9 +11,9 @@ export async function getAlerts(req, res) {
 }
 
 export async function logAlert(req, res) {
-    const { settingId, cgmId, priorityLevel, eventClassification, text, suggestion, encouragment, caregiverId } = req.body;
+    const { settingId, patientId, priorityLevel, eventClassification, text, suggestion, encouragment, caregiverId } = req.body;
     try {
-        const alert = await Alert.create({ settingId, cgmId, priorityLevel, eventClassification, text, suggestion, encouragment, caregiverId });
+        const alert = await Alert.create({ settingId, patientId, priorityLevel, eventClassification, text, suggestion, encouragment, caregiverId });
         res.status(201).json({ success: true, data: alert });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -29,3 +29,15 @@ export async function acknowledgeAlert(req, res) {
         res.status(500).json({ success: false, error: error.message });
     }
 }
+
+export async function getNotifications(req, res) {
+    const { id } = req.params;
+    try {
+        const alert = await Alert.getNotificatons(id);
+        res.json({ success: true, data: alert });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+}
+
+

@@ -17,24 +17,18 @@
 
 ## Alerts (`/api/alerts`)
 
-Alerts represent clinical events — a blood glucose reading that crossed a threshold. An alert is logged to the database regardless of whether the push notification was successfully delivered.
+Alerts represent clinical events — a blood glucose reading that crossed a threshold. An alert is logged to the database regardless of whether the push notification was successfully delivered. FCM push delivery is also managed under this prefix.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/alerts/:patientId` | Returns alert history for a patient. |
 | POST | `/api/alerts/` | Logs a triggered alert manually. |
 | PATCH | `/api/alerts/:id/acknowledge` | Marks an alert as seen/handled by the caregiver. |
-
-## Notifications (`/api/notifications`)
-
-Notifications are the FCM push messages sent to a caregiver's device as a result of an alert. These endpoints manage push delivery — not the clinical events themselves.
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/notifications/registerFCMToken` | Registers a device FCM token to enable push notifications. |
-| POST | `/api/notifications/sendNotification` | Sends a manually specified push notification. |
-| POST | `/api/notifications/sendComposedNotification` | Logs an alert and sends an auto-composed notification based on current patient state. |
-| POST | `/api/notifications/sendComposedNotification/:bg` | Logs an alert and sends an auto-composed notification using the provided blood glucose value. |
+| GET | `/api/alerts/notifications/:id` | Returns unacknowledged alerts for a caregiver to display as notifications. |
+| POST | `/api/alerts/registerFCMToken` | Registers a device FCM token to enable push notifications. |
+| POST | `/api/alerts/sendNotification` | Sends a manually specified push notification. |
+| POST | `/api/alerts/sendComposedNotification` | Logs an alert and sends an auto-composed notification based on current patient state. |
+| POST | `/api/alerts/sendComposedNotification/:bg` | Logs an alert and sends an auto-composed notification using the provided blood glucose value. |
 
 ## Settings (`/api/settings`)
 

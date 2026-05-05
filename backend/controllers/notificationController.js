@@ -32,8 +32,10 @@ export async function sendComposedNotification(req, res) {
 }
 
 export async function sendComposedNotificationWithBg(req, res) {
+  const { trend } = req.query;
   try {
-    await composeNotification(Number(req.params.bg));
+    const bgReading = { value: Number(req.params.bg), trend: trend ? Number(trend) : null };
+    await composeNotification(bgReading);
     res.json({ success: true, message: 'Notification Composed and Sent' });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

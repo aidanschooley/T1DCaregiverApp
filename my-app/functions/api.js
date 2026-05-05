@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://t1dcaregiverapp.onrender.com/',
+  baseURL: __DEV__ ? 'http://10.0.2.2:3000/' : 'https://t1dcaregiverapp.onrender.com/',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
 import { getCurrentBG } from '../dexcom/fetchLatestBg.js';
-import { classifyEvent } from './classifyEvent.js';
+import { classifyEvent, parseTrend, trendArrow } from './classifyEvent.js';
 import { makeSuggestion } from './makeSuggestion.js';
 import { sendNotification } from '../notifications/sendNotification.js';
 import { getPatientGlucoseSettingsByTime } from '../settings/patientGlucoseSettings.js';
@@ -11,20 +11,29 @@ function isNocturnalHour() {
     return hour >= 22 || hour < 6;
 }
 
-export async function composeNotification(bgReading, { lowCountLastHour = 0, highCountLastHour = 0, isRecovering = false } = {}) {
+export async function composeNotification(bgReading) {
     const reading = bgReading ?? await getCurrentBG();
     const bgValue = reading.value ?? reading;
-    const trend = reading.trend ?? null;
+    const rawTrend = reading.trend ?? null;
+    const numericTrend = parseTrend(rawTrend);
 
     const nocturnal = isNocturnalHour();
-    const settings = await getPatientGlucoseSettingsByTime(1, nocturnal ? "nocturnal" : "normal");
-    const patientName = await getPatientNameById(1);
+    const inRange = bgValue >= 70 && bgValue <= 180;
 
-    const event = classifyEvent(bgValue, trend, lowCountLastHour, highCountLastHour, nocturnal, isRecovering);
-    const suggestion = makeSuggestion(event, bgValue, trend);
+    const [settings, patientName, lowCountLastHour, highCountLastHour, isRecovering] = await Promise.all([
+        getPatientGlucoseSettingsByTime(1, nocturnal ? "nocturnal" : "normal"),
+        getPatientNameById(1),
+        Alert.countRecentByType(1, 'low'),
+        Alert.countRecentByType(1, 'high'),
+        inRange ? Alert.wasRecentlyLow(1) : Promise.resolve(false),
+    ]);
 
-    const trendLabel = trend ? ` (${trend})` : '';
-    const title = `${patientName}'s BG: ${bgValue} mg/dL${trendLabel}`;
+    const event = classifyEvent(bgValue, numericTrend, lowCountLastHour, highCountLastHour, nocturnal, isRecovering);
+    const suggestion = makeSuggestion(event, bgValue, numericTrend);
+
+    const arrow = trendArrow(rawTrend);
+    const eventLabel = event.name.replace(/\b\w/g, c => c.toUpperCase());
+    const title = `${patientName}'s BG: ${bgValue} mg/dL${arrow ? ' ' + arrow : ''} — ${eventLabel}`;
     const body = suggestion.followUp
         ? `${suggestion.action}\n\n${suggestion.followUp}`
         : suggestion.action;
@@ -32,7 +41,7 @@ export async function composeNotification(bgReading, { lowCountLastHour = 0, hig
     // Log the clinical event (alert) before attempting delivery
     const alert = await Alert.create({
         settingId: settings.id,
-        cgmId: null,
+        patientId: 1,
         priorityLevel: suggestion.priority,
         eventClassification: event.name,
         text: title,
@@ -49,4 +58,6 @@ export async function composeNotification(bgReading, { lowCountLastHour = 0, hig
         await Alert.updateDeliveryStatus(alert.id, 'failed');
         throw err;
     }
+
+    return { event, suggestion, title, body };
 }

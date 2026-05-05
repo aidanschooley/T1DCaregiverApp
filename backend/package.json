@@ -16,7 +16,10 @@
     "oauth4webapi": "^3.8.5",
     "object-hash": "^3.0.0",
     "openid-client": "^5.6.1",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "expo": "~55.0.20",
+    "react": "19.2.0",
+    "react-native": "0.83.6"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

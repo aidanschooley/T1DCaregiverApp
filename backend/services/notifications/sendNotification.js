@@ -23,7 +23,6 @@ export async function sendNotification(userId, title, body, priority) {
         notification: { title, body },
         token: fcmToken,
       };
-
   const response = await messaging.send(message);
   console.log("Sent:", response, isUrgent ? "Priority High" : "Normal Priority");
 }

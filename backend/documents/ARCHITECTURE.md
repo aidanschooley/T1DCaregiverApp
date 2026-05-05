@@ -1,207 +1,122 @@
 # GlucoseCare Backend Architecture
 
-**Version:** 1.0  
-**Last Updated:** April 2026  
+**Version:** 2.0  
+**Last Updated:** May 2026  
 **Authors:** Aidan Schooley, Sarah Winne
-
----
-
-## Table of Contents
-
-1. [Overview](#overview)
-2. [System Architecture](#system-architecture)
-3. [JITAI Framework Implementation](#jitai-framework-implementation)
-4. [Directory Structure](#directory-structure)
-5. [Core Components](#core-components)
-6. [Data Flow](#data-flow)
-7. [Database Schema](#database-schema)
-8. [API Endpoints](#api-endpoints)
-9. [External Integrations](#external-integrations)
-10. [Deployment](#deployment)
 
 ---
 
 ## Overview
 
-GlucoseCare is a context-aware, just-in-time adaptive notification system designed to support caregivers of children with Type 1 Diabetes. The backend implements the JITAI (Just-in-Time Adaptive Intervention) framework to reduce caregiver alarm fatigue while maintaining patient safety.
+GlucoseCare is a context-aware, just-in-time adaptive notification system for caregivers of children with Type 1 Diabetes. The backend implements the JITAI (Just-in-Time Adaptive Intervention) framework to reduce caregiver alarm fatigue while keeping patient safety as the top priority.
 
-### Key Goals
+### Goals
 
-- **Reduce Alarm Fatigue:** Smart notification filtering based on priority and context
-- **Improve Sleep Quality:** Context-aware notifications that minimize nighttime interruptions
-- **Provide Decision Support:** ADA protocol-based suggestions to reduce caregiver decision fatigue
-- **Maintain Safety:** P0/P1 alerts always get through, regardless of context
+- **Reduce Alarm Fatigue:** Smart filtering based on priority, event type, and context
+- **Improve Sleep Quality:** Nocturnal context awareness minimizes unnecessary nighttime interruptions
+- **Provide Decision Support:** ADA protocol-based suggestions reduce caregiver decision fatigue
+- **Maintain Safety:** P0/P1 alerts always use high-priority, interruptive delivery
 
 ### Technology Stack
 
-- **Runtime:** Node.js + Express.js
-- **Database:** PostgreSQL (via Supabase)
-- **Push Notifications:** Firebase Cloud Messaging (FCM)
-- **External API:** Dexcom CGM API
-- **Language:** JavaScript (ES6+)
+| Layer | Technology |
+|---|---|
+| Runtime | Node.js + Express.js |
+| Database | PostgreSQL via Supabase |
+| Push Notifications | Firebase Cloud Messaging (FCM) |
+| CGM Data | Dexcom Developer API (OAuth 2.0 Sandbox) |
+| Language | JavaScript (ESM) |
 
 ---
 
-## System Architecture
+## JITAI Framework
 
-### High-Level Architecture
+The six JITAI components map directly to backend components:
 
-```
-┌─────────────┐
-│   Dexcom    │ Every 5 minutes
-│  CGM Device │────────────────┐
-└─────────────┘                │
-                               ▼
-                    ┌──────────────────┐
-                    │  Webhook Handler │
-                    └──────────────────┘
-                               │
-                               ▼
-                    ┌──────────────────────────┐
-                    │  JITAI Processing Layer  │
-                    │  ┌────────────────────┐  │
-                    │  │ Safety Detection   │  │ P0-P4 Priority
-                    │  └────────────────────┘  │
-                    │           ↓              │
-                    │  ┌────────────────────┐  │
-                    │  │ Event Classifier   │  │ 11 Event Types
-                    │  └────────────────────┘  │
-                    │           ↓              │
-                    │  ┌────────────────────┐  │
-                    │  │ Context Analyzer   │  │ Time, Availability
-                    │  └────────────────────┘  │
-                    │           ↓              │
-                    │  ┌────────────────────┐  │
-                    │  │ Personalization    │  │ ADA Protocols
-                    │  └────────────────────┘  │
-                    │           ↓              │
-                    │  ┌────────────────────┐  │
-                    │  │ Notification       │  │ Compose Message
-                    │  │ Composer           │  │
-                    │  └────────────────────┘  │
-                    └──────────────────────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │  Supabase DB     │
-                    │  (Save Reading)  │
-                    └──────────────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │ Notification     │
-                    │ Router           │
-                    └──────────────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │   Firebase FCM   │
-                    └──────────────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │  Caregiver's     │
-                    │  Mobile Device   │
-                    └──────────────────┘
-```
-
-### Layered Architecture
-
-```
-┌─────────────────────────────────────────┐
-│         Presentation Layer              │
-│  (Routes, Controllers, Middleware)      │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│         Business Logic Layer            │
-│    (Services - JITAI Components)        │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│         Data Access Layer               │
-│         (Models, Database)              │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│         External Services               │
-│  (Dexcom API, Firebase, Supabase)      │
-└─────────────────────────────────────────┘
-```
+| Component | GlucoseCare |
+|---|---|
+| Distal Outcome | Reduced caregiver alarm fatigue and improved sleep |
+| Proximal Outcome | Faster alert response, reduced dismissal rate, reduced dismissal without action |
+| Decision Point | Blood glucose readings (every 5 minutes from Dexcom) |
+| Tailoring Variables | BG value, BG trend, alert type, alert state, time of day, history, caregiver availability |
+| Intervention Options | Interruptive (P0–P1), Informative (P2–P3), Passive (P4 / encouragement) |
+| Decision Rules | Safety layer → event classifier → suggestion |
 
 ---
 
-## JITAI Framework Implementation
+## Architecture Flowchart
 
-The backend implements all six components of the JITAI framework as described in our research paper.
+```mermaid
+flowchart TD
+    subgraph EXT["External Services"]
+        DEXCOM["Dexcom CGM API\nOAuth 2.0 Sandbox"]
+        FCM["Firebase Cloud\nMessaging"]
+    end
 
-### 1. Distal Outcome
-**Goal:** Reduced caregiver alarm fatigue and improved sleep quality
+    subgraph MOBILE["Mobile App — React Native / Expo"]
+        DEVICE["Caregiver Device\npush notification"]
+        APP["App UI\nDashboard · Alerts · Settings"]
+    end
 
-**Measurement:**
-- Post-study surveys (caregiver mental health, sleep quality)
-- Comparative analysis vs. standard CGM alerts
+    subgraph BACKEND["Backend — Node.js / Express"]
+        subgraph ROUTES["REST API"]
+            R_ALERTS["/api/alerts"]
+            R_GLUCOSE["/api/glucose"]
+            R_SETTINGS["/api/settings"]
+            R_DEX["/dexcom/auth\n/dexcom/api"]
+        end
 
-### 2. Proximal Outcomes
-**Short-term measurable goals:**
-- Faster alert response time
-- Reduced dismissal rate
-- Reduced dismissal without action
+        subgraph JITAI["JITAI Pipeline"]
+            FETCH["fetchLatestBg\nGET /egvs"]
+            COMPOSE["composeNotification\norchestrator"]
+            CLASSIFY["classifyEvent\n11 event types"]
+            SUGGEST["makeSuggestion\ndecision matrix"]
+            SEND["sendNotification\nFCM dispatch"]
+        end
+    end
 
-**Tracked in Database:**
-- `notification.response_time_seconds`
-- `notification.dismissed_at`
-- `notification.dismissed_without_action`
+    subgraph DB["Supabase — PostgreSQL"]
+        T_NOTIF["notification\npriority · event · text\ndelivery_status · acknowledged_at"]
+        T_SET["patient_glucose_settings\nP0–P4 thresholds\nnormal / nocturnal"]
+        T_PAT["patient"]
+        T_TOK["notification_token\nFCM tokens"]
+        T_TIME["caregiver_time\navailability schedule"]
+        T_ACT["caregiver_action"]
+    end
 
-### 3. Decision Points
-**When:** Every 5 minutes when Dexcom sends a new blood glucose reading
+    %% Trigger paths
+    APP -->|"POST /sendComposedNotification"| R_ALERTS
+    R_ALERTS --> COMPOSE
+    COMPOSE --> FETCH
+    FETCH -->|OAuth Bearer| DEXCOM
+    DEXCOM -->|"{ value, trend }"| FETCH
 
-**Implementation:**
-- Webhook endpoint: `POST /api/cgm/webhook`
-- Triggered automatically by Dexcom API
-- Each reading passes through JITAI pipeline
+    %% JITAI pipeline
+    FETCH --> CLASSIFY
+    COMPOSE -->|"lowCount, highCount\nwasRecentlyLow"| T_NOTIF
+    COMPOSE -->|"normal / nocturnal\nthresholds"| T_SET
+    COMPOSE -->|"patient name"| T_PAT
+    CLASSIFY -->|"{ id, name }"| SUGGEST
+    SUGGEST -->|"{ priority, action,\nnotificationType }"| COMPOSE
+    COMPOSE -->|"Alert.create()\npending"| T_NOTIF
+    COMPOSE --> SEND
+    SEND -->|"FCM token lookup"| T_TOK
+    SEND -->|"P0–P2: priority HIGH\nP3–P4: standard"| FCM
+    FCM --> DEVICE
 
-### 4. Tailoring Variables
-**Data used to make decisions:**
+    %% Caregiver response
+    DEVICE -->|"PATCH /:id/acknowledge"| R_ALERTS
+    R_ALERTS -->|"acknowledged_at"| T_NOTIF
 
-| Variable | Source | Purpose |
-|----------|--------|---------|
-| BG Value | Dexcom reading | Safety classification (P0-P4) |
-| BG Trend | Dexcom reading | Event detection (trending low) |
-| Alert Type | Dexcom reading | Context for classification |
-| Alert State | Dexcom reading | Is this ongoing or new? |
-| Time of Day | System timestamp | Night vs day notification strategy |
-| History (60 min) | Database query | Repeated event detection |
-| Caregiver Availability | `caregiver_time` table | Routing priority |
-
-### 5. Intervention Options
-**Three notification types:**
-
-| Type | When Used | Behavior |
-|------|-----------|----------|
-| **CRITICAL** | P0, P1 priority | Loud, interruptive, bypasses DND |
-| **INFORMATIVE** | P2, P3 during day | Standard notification |
-| **PASSIVE** | P4, non-critical at night | Quiet, non-interruptive |
-
-### 6. Decision Rules
-**Logic flow:**
-
+    %% Other API
+    APP -->|REST| R_GLUCOSE
+    APP -->|REST| R_SETTINGS
+    APP -->|OAuth flow| R_DEX
+    R_DEX -->|"send tokens"| DEXCOM
+    DEXCOM -->|"return tokens"| R_DEX
+    R_GLUCOSE --> DB
+    R_SETTINGS --> T_SET
 ```
-IF blood_glucose < 54 THEN
-    priority = P0
-    always_alert = TRUE
-    
-IF priority = P0 OR P1 THEN
-    notification_type = CRITICAL
-    
-IF priority = P2/P3 AND time = night THEN
-    notification_type = PASSIVE
-    
-IF event = critical_low THEN
-    suggestion = 15/15_rule
-```
-
-**Implementation:** `services/CGMProcessingService.js`
 
 ---
 
@@ -209,646 +124,270 @@ IF event = critical_low THEN
 
 ```
 backend/
-├── config/                     # Configuration & connections
-│   ├── database.js            # Supabase connection
-│   ├── dexcom.js              # Dexcom API credentials
-│   ├── firebase.js            # Firebase FCM setup
-│   └── environment.js         # Environment variable validation
+├── app.js                              # Express app: routes, middleware
+├── server.js                           # Entry point
 │
-├── constants/                  # Fixed values & rules
-│   ├── priorities.js          # P0-P4 priority system
-│   ├── events.js              # 11 event type definitions
-│   └── suggestions.js       # ADA treatment protocols
+├── config/
+│   ├── database.js                     # pg pool (Supabase)
+│   └── firebase.js                     # Firebase Admin SDK
 │
-├── models/                     # Database models
-│   ├── Patient.js
-│   ├── Caregiver.js
+├── models/
+│   ├── Alert.js                        # notification table (alert + delivery)
 │   ├── CGMReading.js
-│   ├── Notification.js
+│   ├── Caregiver.js
 │   ├── CaregiverAction.js
 │   ├── CaregiverTime.js
+│   ├── Notification.js
+│   ├── Patient.js
 │   ├── PatientCaregiver.js
 │   └── PatientGlucoseSettings.js
 │
-├── services/                   # Business logic
-│   ├── jitai/                 # JITAI framework components
-│   │   ├── SafetyDetectionLayer.js      # P0-P4 classification
-│   │   ├── EventClassifier.js           # Event type detection
-│   │   ├── PersonalizationEngine.js     # Suggestion generation
-│   │   └── CGMProcessingService.js      # Main orchestrator
+├── services/
+│   ├── jitai/
+│   │   ├── classifyEvent.js            # 11 event types + trend parsing
+│   │   ├── classifyPriority.js         # P0–P4 safety layer
+│   │   ├── makeSuggestion.js           # Decision matrix + ADA protocols
+│   │   └── composeNotification.js      # Pipeline orchestrator
 │   │
-│   ├── notification/          # Notification handling
-│   │   ├── NotificationComposer.js      # Build notifications
-│   │   ├── NotificationRouter.js        # Route to caregivers
-│   │   └── FirebaseMessaging.js         # Send via FCM
+│   ├── notifications/
+│   │   ├── sendNotification.js         # Firebase FCM dispatch
+│   │   └── Tokens.js                   # FCM token store/lookup
 │   │
-│   ├── context/               # Context awareness
-│   │   ├── TimeContext.js               # Time analysis
-│   │   └── CaregiverAvailability.js     # Availability checking
+│   ├── dexcom/
+│   │   ├── fetchLatestBg.js            # GET /egvs from Dexcom sandbox
+│   │   ├── fetchLatest.js
+│   │   ├── fetchDataRange.js
+│   │   ├── formatDataRange.js
+│   │   └── tokenService.js             # Dexcom OAuth token retrieval
 │   │
-│   └── dexcom/                # Dexcom integration
-│       ├── DexcomAPIService.js
-│       └── DexcomAuthService.js
-│
-├── controllers/                # HTTP request handlers
-│   ├── cgm/
-│   │   ├── webhookController.js         # Receives Dexcom data
-│   │   └── readingController.js         # Reading queries
+│   ├── patient/
+│   │   └── patientService.js
 │   │
-│   ├── notification/
-│   │   └── notificationController.js    # Notification management
-│   │
-│   ├── caregiver/
-│   │   ├── caregiverController.js
-│   │   ├── availabilityController.js
-│   │   └── actionController.js
-│   │
-│   └── patient/
-│       └── patientController.js
+│   └── settings/
+│       └── patientGlucoseSettings.js   # Threshold lookup (normal / nocturnal)
 │
-├── middleware/                 # Request interceptors
-│   ├── auth.js                # Authentication
-│   ├── validation.js          # Input validation
-│   └── errorHandler.js        # Error handling
+├── controllers/
+│   ├── alertController.js
+│   ├── caregiverController.js
+│   ├── glucoseController.js
+│   ├── notificationController.js
+│   ├── patientController.js
+│   └── settingsController.js
 │
-├── routes/                     # API endpoint definitions
-│   ├── index.js               # Main router
-│   ├── cgm.routes.js
-│   ├── notification.routes.js
-│   ├── caregiver.routes.js
-│   └── patient.routes.js
+├── routes/
+│   ├── actions.js
+│   ├── alert.js
+│   ├── caregivers.js
+│   ├── glucose.js
+│   ├── patients.js
+│   ├── settings.js
+│   └── dexcomApi/
+│       ├── authentication.js
+│       ├── datarange.js
+│       └── glucoseApi.js
 │
-├── workers/                    # Background processes
-│   └── cgmDataProcessor.js    # Continuous processing
-│
-├── utils/                      # Helper functions
-│   ├── logger.js              # Logging
-│   ├── validator.js           # Validation helpers
-│   └── dateTime.js            # Date/time utilities
-│
-├── tests/                      # Test files
-│   ├── unit/
-│   ├── integration/
-│   └── fixtures/
-│
-├── app.js                      
-├── server.js                   # Application entry point
-├── package.json                # Dependencies
-├── .env                        # Environment variables (not in git)
-└── .gitignore                  # Git ignore rules
+└── documents/
+    ├── ARCHITECTURE.md
+    ├── API_ENDPOINTS.md
+    └── EVENT_IDS.md
 ```
-
----
-
-## Core Components
-
-### Safety Detection Layer
-**File:** `services/jitai/SafetyDetectionLayer.js`
-
-**Purpose:** Classify blood glucose readings into priority levels (P0-P4)
-
-**Based on:**
-- P0: < 54 mg/dL (ADA Level 2 Hypoglycemia)
-- P1: 54-69 mg/dL (ADA Level 1 Hypoglycemia)
-- P2: > 250 mg/dL (Severe Hyperglycemia)
-- P3: 180-250 mg/dL (Mild Hyperglycemia)
-- P4: 70-180 mg/dL (In Range)
-
-**Output:**
-```javascript
-{
-  level: 'P1',
-  description: 'Low - Level 1 Hypoglycemia',
-  alwaysAlert: true,
-  interruptive: true
-}
-```
-
----
-
-### Event Classifier
-**File:** `services/jitai/EventClassifier.js`
-
-**Purpose:** Identify which of 11 event types is occurring
-
-**Event Types:**
-
-**Hypoglycemia (BG < 70):**
-1. Critical Low (< 54)
-2. Nocturnal Low (< 70 at night)
-3. Standard Low (< 70)
-4. Repeated Unresolved Low (≥3 in 60 min)
-5. Trending Low (>70 but falling rapidly)
-
-**Hyperglycemia (BG > 180):**
-6. Severe High (> 250)
-7. Mild High (180-250)
-8. Repeated Unresolved High (≥3 > 250 in 60 min)
-9. Repeated Unresolved Mild (≥3 in 180-250 range in 60 min)
-
-**Goal Range (70-180):**
-10. Recovering (returning to range after low)
-11. In Range (stable)
-
-**Input:**
-- Current reading
-- Past 60 minutes of readings
-- Time context
-
-**Output:**
-```javascript
-{
-  eventType: 2,
-  eventName: 'Nocturnal Low',
-  eventDescription: 'Overnight low (< 70 mg/dL)'
-}
-```
-
----
-
-### Personalization Engine
-**File:** `services/jitai/PersonalizationEngine.js`
-
-**Purpose:** Generate personalized suggestions using ADA protocols
-
-**Protocols:**
-- **15/15 Rule:** For hypoglycemia
-- **Glucagon Protocol:** For severe hypoglycemia when patient can't swallow
-- **Conservative Hyperglycemia:** For high blood glucose
-
-**Output:**
-```javascript
-{
-  title: '15/15 Rule',
-  description: 'Give 15g fast-acting carbs, wait 15 min, recheck',
-  steps: [
-    'Give 15 grams of fast-acting carbohydrates',
-    'Wait 15 minutes',
-    'Recheck blood glucose',
-    'If still below 70 mg/dL, repeat'
-  ],
-  protocolCode: '15_15_RULE'
-}
-```
-
----
-
-### Notification Composer
-**File:** `services/notification/NotificationComposer.js`
-
-**Purpose:** Build complete notification with all components
-
-**Determines:**
-- Notification type (Critical/Informative/Passive)
-- Title and message
-- Whether to include encouragement
-
-**Output:**
-```javascript
-{
-  type: 'CRITICAL',
-  title: '⚠️ Low Blood Sugar Alert',
-  message: "Tommy's blood glucose is 62 mg/dL (Overnight low)",
-  suggestion: { ... },
-  encouragement: null,
-  isInterruptive: true
-}
-```
-
----
-
-### CGM Processing Service
-**File:** `services/CGMProcessingService.js`
-
-**Purpose:** Orchestrate entire JITAI pipeline
-
-**Process:**
-1. Receive CGM reading
-2. Analyze time context
-3. Classify priority (Safety Layer)
-4. Classify event type (Event Classifier)
-5. Generate suggestion (Personalization Engine)
-6. Compose notification (Notification Composer)
-7. Determine if should notify
-
-**This is the main entry point for JITAI processing.**
 
 ---
 
 ## Data Flow
 
-### End-to-End Flow: Dexcom Reading → Caregiver Notification
-
 ```
-1. DEXCOM SENDS DATA (every 5 minutes)
-   └─→ POST /api/cgm/webhook
-       {
-         value: 62,
-         trend: "SingleDown",
-         timestamp: "2026-04-16T02:00:00Z",
-         alertType: "low",
-         alertState: "active"
-       }
-
-2. MIDDLEWARE VALIDATION
-   └─→ middleware/validation.js
-       ✓ Valid BG value (20-600)
-       ✓ Valid trend
-       ✓ Valid timestamp
-
-3. WEBHOOK CONTROLLER
-   └─→ controllers/cgm/webhookController.js
-       - Extract reading data
-       - Get patient info from database
-       - Get recent readings (past 60 min)
-
-4. JITAI PROCESSING PIPELINE
-   └─→ services/CGMProcessingService.js
-   
-   Step 1: Time Context
-   └─→ services/context/TimeContext.js
-       Output: { isNightTime: true, timeCategory: 'NIGHT' }
-   
-   Step 2: Safety Detection
-   └─→ services/jitai/SafetyDetectionLayer.js
-       Input: BG = 62
-       Output: { level: 'P1', alwaysAlert: true }
-   
-   Step 3: Event Classification
-   └─→ services/jitai/EventClassifier.js
-       Input: reading + recent readings + time context
-       Output: { eventType: 2, eventName: 'Nocturnal Low' }
-   
-   Step 4: Personalization
-   └─→ services/jitai/PersonalizationEngine.js
-       Input: event + priority
-       Output: { title: '15/15 Rule', steps: [...] }
-   
-   Step 5: Notification Composition
-   └─→ services/notification/NotificationComposer.js
-       Input: all above data
-       Output: Complete notification object
-
-5. DATABASE SAVE
-   └─→ models/CGMReading.js
-       Save reading with priority & event type
-   
-   └─→ models/Notification.js
-       Save notification record
-
-6. NOTIFICATION ROUTING
-   └─→ services/notification/NotificationRouter.js
-       - Get patient's caregivers
-       - Check availability
-       - Order by priority
-       - For P0/P1: notify everyone
-
-7. SEND NOTIFICATION
-   └─→ services/notification/FirebaseMessaging.js
-       - Format for FCM
-       - Set priority (high for Critical)
-       - Send push notification
-
-8. CAREGIVER RECEIVES
-   └─→ Mobile device gets push notification
-       Title: "⚠️ Low Blood Sugar Alert"
-       Body: "Tommy's blood glucose is 62 mg/dL"
-       Actions: View Details, Dismiss
+Dexcom Sandbox API
+       │
+       │  GET /v3/users/self/egvs (OAuth 2.0 Bearer)
+       ▼
+fetchLatestBg.js
+       │  { value, trend, systemTime }
+       ▼
+composeNotification.js  ◄── orchestrates the full pipeline
+       │
+       ├── getPatientGlucoseSettingsByTime()   reads normal / nocturnal thresholds
+       ├── getPatientNameById()
+       ├── Alert.countRecentByType()           low / high counts in last 60 min
+       └── Alert.wasRecentlyLow()              recovering detection (30 min)
+       │
+       ▼
+classifyEvent.js
+       │  { id, name, description }  (one of 11 event types)
+       ▼
+makeSuggestion.js
+       │  { priority, notificationType, action, followUp, escalate }
+       ▼
+Alert.create()          logs to notification table (delivery_status = 'pending')
+       │
+       ▼
+sendNotification.js
+       │  looks up FCM token → builds Firebase message
+       │  P0/P1/P2 → android priority HIGH + MAX channel
+       │  P3/P4    → standard priority
+       ▼
+Firebase Cloud Messaging  →  Caregiver's mobile device
+       │
+       └── Alert.updateDeliveryStatus('sent' | 'failed')
 ```
+
+---
+
+## Safety Detection Layer (`classifyPriority.js`)
+
+Thresholds are read from `patient_glucose_settings` and vary by time of day (normal vs. nocturnal). Default ADA-based values:
+
+| Priority | Blood Glucose | Description |
+|---|---|---|
+| P0 | < 54 mg/dL | ADA Level 2 Hypoglycemia — always interruptive |
+| P1 | 54–69 mg/dL | ADA Level 1 Hypoglycemia — always interruptive |
+| P2 | > 250 mg/dL | Severe Hyperglycemia |
+| P3 | 180–250 mg/dL | Mild Hyperglycemia |
+| P4 | 70–180 mg/dL | In Range |
+
+---
+
+## Event Classification Layer (`classifyEvent.js`)
+
+Inputs: `glucose`, `trend` (string or numeric), `lowCountLastHour`, `highCountLastHour`, `isNocturnal`, `isRecovering`
+
+**Trend rates** (`parseTrend`): `doubleDown (−3)` … `flat (0)` … `doubleUp (+3)`
+
+| ID | Event | Condition |
+|---|---|---|
+| 1 | critical low | glucose ≤ 54 |
+| 2 | nocturnal low | glucose ≤ 70 AND isNocturnal |
+| 3 | standard low | glucose ≤ 70 |
+| 4 | repeated unresolved low | glucose ≤ 70 AND lowCount ≥ 3/60 min |
+| 5 | trending low | glucose > 70 AND trend < −2 (doubleDown) |
+| 6 | severe high | glucose ≥ 250 |
+| 7 | mild high | 180 ≤ glucose < 250 |
+| 8 | repeated unresolved high | glucose ≥ 250 AND highCount ≥ 3/60 min |
+| 9 | repeated unresolved mild | 180 ≤ glucose < 250 AND highCount ≥ 3/60 min |
+| 10 | recovering | 70–180 AND wasRecentlyLow |
+| 11 | in range | 70–180 AND stable |
+
+---
+
+## Suggestion Layer (`makeSuggestion.js`)
+
+A decision matrix maps each event ID to an ADA-backed action:
+
+| Event | Notification Type | Protocol |
+|---|---|---|
+| 1 critical low | Interruptive | 25 g carbs; glucagon if unresponsive; call 911 |
+| 2 nocturnal low | Interruptive | 15/15 rule; protein snack follow-up |
+| 3 standard low | Interruptive | 15/15 rule |
+| 4 repeated unresolved low | Interruptive | 15/15 + glucagon; escalate to doctor |
+| 5 trending low | Informative | Fast carbs now to prevent low |
+| 6 severe high | Informative | Check ketones; bolus + hydrate |
+| 7 mild high | Informative | Conservative correction; hydrate |
+| 8 repeated unresolved high | Informative | Ketone check; escalate |
+| 9 repeated unresolved mild | Informative | Consider correction; recheck 2h |
+| 10 recovering | Passive | Stop carbs; monitor |
+| 11 in range | Passive | Good work |
+
+**Notification types:**
+- `interruptive` — P0/P1: high-priority FCM, bypasses DND on Android
+- `informative` — P2/P3: standard FCM
+- `passive` — P4: encouragement, no urgency
 
 ---
 
 ## Database Schema
 
-### Tables
+All alert and notification data is stored in a single `notification` table. The `Alert` model owns this table and handles both the clinical event side and the delivery side.
 
-**1. patient**
-- Stores patient information
-- Links to Dexcom user ID
+**Key tables:**
 
-**2. caregiver**
-- Stores caregiver information
-- Contains FCM token for push notifications
+| Table | Purpose |
+|---|---|
+| `notification` | One row per alert: event classification, priority, composed text, suggestion, delivery status, acknowledged_at |
+| `patient_glucose_settings` | Per-patient thresholds for P0–P4, split into normal and nocturnal profiles |
+| `patient` | Patient info; looked up by ID for notification title |
+| `caregiver` | Caregiver info |
+| `patient_caregiver` | Many-to-many patient↔caregiver with role |
+| `caregiver_time` | Availability schedule (planned for routing) |
+| `caregiver_action` | Actions logged by caregiver in response to alerts |
+| `notification_token` | FCM tokens keyed by user ID |
 
-**3. patient_caregiver**
-- Many-to-many relationship
-- Links patients to caregivers
-- Stores relationship type (mother, father, etc.)
-
-**4. cgm_reading**
-- Stores every blood glucose reading
-- Includes Dexcom data + our classifications
-- Fields: `value`, `trend`, `priority`, `event_type`
-
-**5. notification**
-- Stores all notifications sent
-- Tracks response metrics
-- Fields: `type`, `dismissed_at`, `response_time_seconds`, `dismissed_without_action`
-
-**6. caregiver_action**
-- Logs actions taken in response to alerts
-- Used to measure dismissal without action rate
-
-**7. caregiver_time**
-- Stores availability schedules
-- Used for context-aware routing
-
-**8. patient_glucose_settings**
-- Custom thresholds per patient
-- Allows personalization of P0-P4 ranges
-
-### Key Relationships
+**`notification` columns used by the pipeline:**
 
 ```
-patient ←─────→ patient_caregiver ←─────→ caregiver
-   │                                          │
-   │                                          │
-   ↓                                          ↓
-cgm_reading                            notification
-                                             │
-                                             ↓
-                                      caregiver_action
+setting_id           → links to patient_glucose_settings
+patient_id
+caregiver_id
+priority_level       → P0–P4
+event_classification → event name string
+text                 → notification title
+suggestion           → action + follow-up body
+encouragment         → set for passive notifications
+delivery_status      → pending | sent | failed
+acknowledged_at      → set when caregiver taps acknowledge
+created_at
 ```
 
 ---
 
 ## API Endpoints
 
-### CGM Endpoints
+### Alerts / Notifications (`/api/alerts`)
 
-```
-POST   /api/cgm/webhook
-       Receive blood glucose data from Dexcom
-       Auth: Dexcom webhook signature
-       Body: { value, trend, timestamp, alertType, alertState }
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/alerts/:patientId` | All alerts for a patient |
+| GET | `/api/alerts/notifications/:id` | P0–P2 alerts for a patient |
+| POST | `/api/alerts` | Log an alert manually |
+| PATCH | `/api/alerts/:id/acknowledge` | Mark alert acknowledged |
+| POST | `/api/alerts/registerFCMToken` | Register device FCM token |
+| POST | `/api/alerts/sendNotification` | Send a raw manual push |
+| POST | `/api/alerts/sendComposedNotification` | Run full JITAI pipeline (fetch live BG) |
+| POST | `/api/alerts/sendComposedNotification/:bg` | Run pipeline with injected BG value |
 
-GET    /api/cgm/readings/:patientId
-       Get recent readings for a patient
-       Auth: Required
-       Query: ?minutes=60
-       
-GET    /api/cgm/readings/:patientId/range
-       Get readings by date range
-       Auth: Required
-       Query: ?startDate=...&endDate=...
-```
+### Other App Routes
 
-### Notification Endpoints
+| Prefix | Purpose |
+|---|---|
+| `/api/patients` | Patient CRUD |
+| `/api/glucose` | CGM reading queries |
+| `/api/settings` | Patient glucose settings |
 
-```
-GET    /api/notifications/:caregiverId
-       Get all notifications for a caregiver
-       Auth: Required
-       Query: ?limit=50
-       
-GET    /api/notifications/:caregiverId/unread
-       Get unread notifications
-       Auth: Required
-       
-PUT    /api/notifications/:notificationId/dismiss
-       Mark notification as dismissed
-       Auth: Required
-       Body: { withAction: true/false }
-```
+### Dexcom OAuth & Data
 
-### Caregiver Endpoints
-
-```
-GET    /api/caregivers/:caregiverId
-       Get caregiver information
-       Auth: Required
-       
-PUT    /api/caregivers/:caregiverId
-       Update caregiver information
-       Auth: Required
-       
-GET    /api/caregivers/:caregiverId/availability
-       Get availability schedule
-       Auth: Required
-       
-PUT    /api/caregivers/:caregiverId/availability
-       Update availability schedule
-       Auth: Required
-```
-
-### Patient Endpoints
-
-```
-GET    /api/patients/:patientId
-       Get patient information
-       Auth: Required
-       
-GET    /api/patients/:patientId/caregivers
-       Get all caregivers for a patient
-       Auth: Required
-```
+| Prefix | Purpose |
+|---|---|
+| `/dexcom/auth` | OAuth 2.0 login flow |
+| `/dexcom/api` | Glucose readings + data range proxy |
 
 ---
 
 ## External Integrations
 
-### Dexcom API
+### Dexcom Developer API (Sandbox)
+- **Auth:** OAuth 2.0 — user grants access, tokens stored in session
+- **Endpoint used:** `GET /v3/users/self/egvs` via `fetchLatestBg.js`
+- **Current state:** Sandbox mode with test data
 
-**Purpose:** Receive real-time blood glucose data
-
-**Integration Method:** Webhook (push)
-- Dexcom calls our endpoint every 5 minutes
-- We receive readings in real-time
-
-**Authentication:** OAuth 2.0
-- User grants permission via Dexcom login
-- We receive access token
-- Token used for API requests
-
-**Endpoints Used:**
-- `/v3/users/self/egvs` - Get glucose readings
-- `/v3/users/self/dataRange` - Get available data range
-
-**Configuration:** `config/dexcom.js`
-
----
-
-### Firebase Cloud Messaging (FCM)
-
-**Purpose:** Send push notifications to mobile devices
-
-**Integration Method:** Firebase Admin SDK
-
-**Features Used:**
-- Push notifications to iOS and Android
-- Critical alerts (bypass Do Not Disturb)
-- Custom notification channels
-- Priority levels
-
-**Configuration:** `config/firebase.js`
-
----
+### Firebase Cloud Messaging
+- **SDK:** Firebase Admin (`firebase-admin`)
+- **Config:** `config/firebase.js`
+- **Priority:** P0–P2 sends `android.priority = 'high'` + `notification.priority = 'MAX'`
+- **Token management:** `services/notifications/Tokens.js` (stored in `notification_token` table)
 
 ### Supabase (PostgreSQL)
-
-**Purpose:** Database storage
-
-**Integration Method:** Supabase JavaScript client
-
-**Features Used:**
-- PostgreSQL database
-- Real-time subscriptions (future)
-- Row-level security
-- Auto-generated REST API
-
-**Configuration:** `config/database.js`
-
----
-
-## Deployment
-
-### Environment Variables Required
-
-```
-# Database
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_KEY=your-service-key
-
-# Dexcom API
-DEXCOM_CLIENT_ID=your-client-id
-DEXCOM_CLIENT_SECRET=your-client-secret
-DEXCOM_REDIRECT_URI=https://your-domain.com/auth/dexcom/callback
-
-# Server
-PORT=3000
-NODE_ENV=production
-
-# Authentication
-JWT_SECRET=your-jwt-secret
-
-# Firebase
-FIREBASE_PROJECT_ID=your-project-id
-```
-
-### Running the Application
-
-**Development:**
-```bash
-npm install
-npm run dev
-```
-
-**Production:**
-```bash
-npm install --production
-npm start
-```
-
-**Testing:**
-```bash
-npm test
-npm run test:coverage
-```
-
-### Deployment Platforms
-
-Recommended platforms:
-- **Heroku** - Easy deployment
-- **AWS EC2** - More control
-- **Google Cloud Run** - Serverless
-- **DigitalOcean App Platform** - Simple and affordable
-
----
-
-## Security Considerations
-
-### Authentication
-- JWT tokens for API requests
-- Dexcom OAuth 2.0 for CGM data access
-- Row-level security in Supabase
-
-### Data Protection
-- HTTPS only in production
-- Environment variables for secrets
-- No sensitive data in logs
-- HIPAA considerations (PHI handling)
-
-### Webhook Security
-- Validate Dexcom webhook signatures
-- Rate limiting on endpoints
-- Input validation on all requests
-
----
-
-## Performance Considerations
-
-### Response Time Goals
-- Webhook processing: < 500ms
-- API requests: < 200ms
-- Notification delivery: < 2 seconds
-
-### Scalability
-- Stateless design (can run multiple instances)
-- Database connection pooling
-- Background worker for async processing
-- Caching for frequently accessed data
-
----
-
-## Monitoring & Logging
-
-### Logging
-- Winston logger for structured logging
-- Log levels: error, warn, info, debug
-- Logs stored in files and console
-
-### Metrics to Track
-- Alert response time (proximal outcome)
-- Dismissal rate (proximal outcome)
-- Notification delivery success rate
-- API endpoint response times
-- Database query performance
-
----
-
-## Future Enhancements
-
-### Planned Features
-1. **Machine Learning:** Predictive low alerts
-2. **Multi-language Support:** Spanish, etc.
-3. **Caregiver Insights Dashboard:** Analytics on patterns
-4. **Integration with Insulin Pumps:** Closed-loop suggestions
-5. **Voice Commands:** Siri/Google Assistant integration
-
-### Research Extensions
-1. Measure long-term outcomes (6-month study)
-2. Compare with control group (standard CGM alerts)
-3. Survey caregiver mental health metrics
-4. Analyze patterns in dismissed alerts
+- **Client:** `pg` connection pool in `config/database.js`
+- **Eight tables** listed above
 
 ---
 
 ## References
 
-### ADA Standards
-- American Diabetes Association. Standards of Medical Care in Diabetes—2024
-- Hypoglycemia classification levels
-- Treatment protocols
-
-### JITAI Framework
-- Nahum-Shani et al. (2018). Just-in-Time Adaptive Interventions (JITAIs) in Mobile Health
-
-### Related Work
-- CaNoE Framework (Context-Aware Notifications for Elderly)
-- CGM Alarm Fatigue Literature Review
+- American Diabetes Association — Hypoglycemia classification and treatment protocols
+- Nahum-Shani et al. — Just-in-Time Adaptive Interventions (JITAIs) in Mobile Health
+- Nava-Muñoz & Morán — CANoE: Context-Aware Notification Model for Nursing Homes
+- Kaylor & Morrow — Alarm fatigue and sleep deprivation in CGM caregivers
+- Giza et al. — Can Glucose Alarm Fatigue Threaten CGM Clinical Benefit?
 
 ---
 
-## Contact
-
-**Project Authors:**
-- Aidan Schooley - aidan.schooley27@houghton.edu
-- Sarah Winne - sarah.winne27@houghton.edu
-
-**Institution:** Houghton University
-
-**Research Period:** March - May 2026
-
----
-
-*This architecture document describes the GlucoseCare backend as implemented for the IEEE conference paper "GlucoseCare: A Context-Aware Just-in-Time Adaptive Notification System for Caregivers of Children with Type 1 Diabetes"*
+*This document describes the GlucoseCare backend as implemented for "GlucoseCare: A Context-Aware Just-in-Time Adaptive Notification System for Caregivers of Children with Type 1 Diabetes" (Schooley & Winne, Houghton University, 2026)*

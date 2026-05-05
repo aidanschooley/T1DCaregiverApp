@@ -1,9 +1,42 @@
+const TREND_RATES = {
+  doubleUp: 3,
+  singleUp: 2,
+  fortyFiveUp: 1,
+  flat: 0,
+  fortyFiveDown: -1,
+  singleDown: -2,
+  doubleDown: -3,
+};
+
+const TREND_ARROWS = {
+  doubleUp: '↑↑',
+  singleUp: '↑',
+  fortyFiveUp: '↗',
+  flat: '→',
+  fortyFiveDown: '↘',
+  singleDown: '↓',
+  doubleDown: '↓↓',
+};
+
+export function parseTrend(trend) {
+  if (trend === null || trend === undefined) return null;
+  if (typeof trend === 'number') return trend;
+  return TREND_RATES[trend] ?? null;
+}
+
+export function trendArrow(trend) {
+  if (!trend) return '';
+  return TREND_ARROWS[trend] ?? '';
+}
+
 export function classifyEvent(glucose, trend = null, lowCountLastHour = 0, highCountLastHour = 0, isNocturnal = false, isRecovering = false) {
-  if (glucose < 54) {
+  const numericTrend = parseTrend(trend);
+
+  if (glucose <= 54) {
     return { id: 1, name: 'critical low', description: 'Severe hypoglycemia' };
   }
 
-  if (glucose < 70) {
+  if (glucose <= 70) {
     if (lowCountLastHour >= 3) {
       return { id: 4, name: 'repeated unresolved low', description: 'Still low after alerts' };
     }
@@ -12,20 +45,20 @@ export function classifyEvent(glucose, trend = null, lowCountLastHour = 0, highC
     }
     return { id: 3, name: 'standard low', description: 'General low event' };
   }
-  if (glucose > 250) {
+
+  if (glucose >= 250) {
     return { id: 6, name: 'severe high', description: 'Severe hyperglycemia' };
   }
 
-  if (glucose > 180) {
+  if (glucose >= 180) {
     if (highCountLastHour >= 3) {
       return { id: 8, name: 'repeated unresolved high', description: 'Persistently high' };
     }
     return { id: 7, name: 'mild high', description: 'Moderate high' };
   }
 
-
   // Trending low: in range but falling rapidly toward hypoglycemia
-  if (trend !== null && trend < -2) {
+  if (numericTrend !== null && numericTrend < -2) {
     return { id: 5, name: 'trending low', description: 'Rapid downward trend' };
   }
 

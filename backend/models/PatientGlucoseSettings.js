@@ -10,10 +10,15 @@ export default class PatientGlucoseSettings {
     }
 
     static async getSettingsByTime(patientId, time) {
-        const query = `SELECT * FROM patient_glucose_settings WHERE patient_id = $1 AND time = $2`;
+        const query = `
+            SELECT * FROM patient_glucose_settings
+            WHERE patient_id = $1
+            ORDER BY CASE WHEN time = $2 THEN 0 ELSE 1 END
+            LIMIT 1
+        `;
         const values = [patientId, time];
         const result = await pool.query(query, values);
-        if (result.rowCount === 0) throw new Error(`No glucose settings found for patient ${patientId} at time ${time}`);
+        if (result.rowCount === 0) throw new Error(`No glucose settings found for patient ${patientId}`);
         return result.rows[0];
     }
     

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 import api from '../../functions/api.js';
 
 const useNotification = (userId: string | number = 1) => {
@@ -19,7 +20,7 @@ const useNotification = (userId: string | number = 1) => {
     setFcmToken(token);
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        await api.post('api/notifications/registerFCMToken', { userId, fcmToken: token });
+        await api.post('api/alerts/registerFCMToken', { userId, fcmToken: token });
         console.log('FCM token registered successfully');
         return;
       } catch {
@@ -34,6 +35,11 @@ const useNotification = (userId: string | number = 1) => {
 
     const init = async () => {
       await requestPermission();
+      await notifee.createChannel({
+        id: 'glucose-alerts',
+        name: 'Glucose Alerts',
+        importance: AndroidImportance.HIGH,
+      });
       try {
         const token = await messaging().getToken();
         console.log('FCM token obtained:', token);
@@ -47,7 +53,23 @@ const useNotification = (userId: string | number = 1) => {
 
     init();
 
-    return () => unsubscribe?.();
+    const unsubscribeForeground = messaging().onMessage(async remoteMessage => {
+      const { title, body } = remoteMessage.notification ?? {};
+      await notifee.displayNotification({
+        title,
+        body,
+        android: {
+          channelId: 'glucose-alerts',
+          importance: AndroidImportance.HIGH,
+          pressAction: { id: 'default' },
+        },
+      });
+    });
+
+    return () => {
+      unsubscribe?.();
+      unsubscribeForeground();
+    };
   }, []);
 
   return { fcmToken };
